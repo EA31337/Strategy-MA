@@ -32,7 +32,6 @@
  */
 
 // Includes.
-#include <EA31337-classes\Indicator.mqh>
 #include <EA31337-classes\Strategy.mqh>
 #include <EA31337-classes\Strategies.mqh>
 
@@ -55,39 +54,33 @@
 #ifdef __input__ input #endif int MA_SignalMethod = -98; // Signal method (-127-127)
 #ifdef __input__ input #endif string MA_SignalMethods = ""; // Signal methods
 
-class MA : public Strategy {
+class S_MA : public Strategy {
 private:
 
 public:
 
-  // Calculates the Moving Average indicator.
-  /*
-  bool Update(ENUM_TIMEFRAMES tf = PERIOD_M1, string symbol = NULL) {
-    double ratio = 1.0;
-    int shift;
-    int index = Timeframe::TfToIndex(tf);
-    ratio = tf == 30 ? 1.0 : fmax(MA_Period_Ratio, NEAR_ZERO) / tf * 30;
-    for (int i = 0; i < FINAL_ENUM_INDICATOR_INDEX; i++) {
-      shift = i + MA_Shift + (i == FINAL_ENUM_INDICATOR_INDEX - 1 ? MA_Shift_Far : 0);
-      ma_fast[index][i]   = iMA(symbol, tf, (int) (MA_Period_Fast * ratio),   MA_Shift_Fast,   MA_Method, MA_Applied_Price, shift);
-      ma_medium[index][i] = iMA(symbol, tf, (int) (MA_Period_Medium * ratio), MA_Shift_Medium, MA_Method, MA_Applied_Price, shift);
-      ma_slow[index][i]   = iMA(symbol, tf, (int) (MA_Period_Slow * ratio),   MA_Shift_Slow,   MA_Method, MA_Applied_Price, shift);
-      if (tf == Period() && i < FINAL_ENUM_INDICATOR_INDEX - 1) {
-        #include <EA31337-classes\Draw.mqh>
-        Draw::TLine(StringFormat("%s%s%d", symbol, "MA Fast", i),   ma_fast[index][i],   ma_fast[index][i+1],    iTime(NULL, 0, shift), iTime(NULL, 0, shift+1), clrBlue);
-        Draw::TLine(StringFormat("%s%s%d", symbol, "MA Medium", i), ma_medium[index][i], ma_medium[index][i+1],  iTime(NULL, 0, shift), iTime(NULL, 0, shift+1), clrYellow);
-        Draw::TLine(StringFormat("%s%s%d", symbol, "MA Slow", i),   ma_slow[index][i],   ma_slow[index][i+1],    iTime(NULL, 0, shift), iTime(NULL, 0, shift+1), clrGray);
-      }
-    }
-    #ifdef __debug__
-    logger.Debug(StringFormat("MA Fast M%d: %s", tf, Arrays::ArrToString2D(ma_fast, ",", Digits)));
-    logger.Debug(StringFormat("MA Medium M%d: %s", tf, Arrays::ArrToString2D(ma_medium, ",", Digits)));
-    logger.Debug(StringFormat("MA Slow M%d: %s", tf, Arrays::ArrToString2D(ma_slow, ",", Digits)));
-    // if (VerboseDebug && Check::IsVisualMode()) Draw::DrawMA(tf);
-    #endif
-    return (bool) ma_slow[index][CURR];
+  /**
+   * Class constructor.
+   */
+  S_MA(
+    string _name,
+    ENUM_TIMEFRAMES _tf,
+    uint _magic_no
+  ) :
+    Strategy(_name, _tf, _magic_no)
+  {
   }
-  */
+
+  /**
+   * Initialize strategy.
+   */
+  bool Init() {
+    bool initiated = true;
+    data = new I_MA();
+    initiated &= data.Update();
+    initiated &= data.GetValue(MA_FAST) > 0;
+    return initiated;
+  }
 
   /**
    * Check whether signal is on buy or sell.
@@ -98,52 +91,62 @@ public:
    *   _level (double) - signal level to consider the signal
    */
   bool Signal(ENUM_ORDER_TYPE _cmd, int _method = 0, double _level = 0.0) {
-    bool result = False;
-    /*
-    // if (signal_method == EMPTY) signal_method = GetStrategySignalMethod(MA, tf, 0);
-    // if (signal_level == EMPTY)  signal_level  = GetStrategySignalLevel(MA, tf, 0);
-    double gap = signal_level * pip_size;
+    bool _signal = false;
+    _level *= market.GetPipSize();
+    #define _MA(type, index) data.GetValue(type, index)
 
-    switch (cmd) {
-      case OP_BUY:
-        result  = ma_fast[period][CURR]   > ma_medium[period][CURR] + gap;
-        result &= ma_medium[period][CURR] > ma_slow[period][CURR];
-        if ((signal_method &   1) != 0) result &= ma_fast[period][CURR] > ma_slow[period][CURR] + gap;
-        if ((signal_method &   2) != 0) result &= ma_medium[period][CURR] > ma_slow[period][CURR];
-        if ((signal_method &   4) != 0) result &= ma_slow[period][CURR] > ma_slow[period][PREV];
-        if ((signal_method &   8) != 0) result &= ma_fast[period][CURR] > ma_fast[period][PREV];
-        if ((signal_method &  16) != 0) result &= ma_fast[period][CURR] - ma_medium[period][CURR] > ma_medium[period][CURR] - ma_slow[period][CURR];
-        if ((signal_method &  32) != 0) result &= (ma_medium[period][PREV] < ma_slow[period][PREV] || ma_medium[period][FAR] < ma_slow[period][FAR]);
-        if ((signal_method &  64) != 0) result &= (ma_fast[period][PREV] < ma_medium[period][PREV] || ma_fast[period][FAR] < ma_medium[period][FAR]);
+    switch (_cmd) {
+      case ORDER_TYPE_BUY:
+        _signal  = _MA(MA_FAST, CURR) > _MA(MA_MEDIUM, CURR) + _level;
+        _signal &= _MA(MA_MEDIUM, CURR) > _MA(MA_SLOW, CURR) + _level;
+        if ((_method & OPEN_METHOD1) != 0) _signal &= _MA(MA_FAST, CURR) > _MA(MA_SLOW, CURR) + _level;
+        if ((_method & OPEN_METHOD2) != 0) _signal &= _MA(MA_MEDIUM, CURR) > _MA(MA_SLOW, CURR);
+        if ((_method & OPEN_METHOD3) != 0) _signal &= _MA(MA_SLOW, CURR) > _MA(MA_SLOW, PREV);
+        if ((_method & OPEN_METHOD4) != 0) _signal &= _MA(MA_FAST, CURR) > _MA(MA_FAST, PREV);
+        if ((_method & OPEN_METHOD5) != 0) _signal &= _MA(MA_FAST, CURR) - _MA(MA_MEDIUM, CURR) > _MA(MA_MEDIUM, CURR) - _MA(MA_SLOW, CURR);
+        if ((_method & OPEN_METHOD6) != 0) _signal &= (_MA(MA_MEDIUM, PREV) < _MA(MA_SLOW, PREV) || _MA(MA_MEDIUM, FAR) < _MA(MA_SLOW, FAR));
+        if ((_method & OPEN_METHOD7) != 0) _signal &= (_MA(MA_FAST, PREV) < _MA(MA_MEDIUM, PREV) || _MA(MA_FAST, FAR) < _MA(MA_MEDIUM, FAR));
         break;
-      case OP_SELL:
-        result  = ma_fast[period][CURR]   < ma_medium[period][CURR] - gap;
-        result &= ma_medium[period][CURR] < ma_slow[period][CURR];
-        if ((signal_method &   1) != 0) result &= ma_fast[period][CURR] < ma_slow[period][CURR] - gap;
-        if ((signal_method &   2) != 0) result &= ma_medium[period][CURR] < ma_slow[period][CURR];
-        if ((signal_method &   4) != 0) result &= ma_slow[period][CURR] < ma_slow[period][PREV];
-        if ((signal_method &   8) != 0) result &= ma_fast[period][CURR] < ma_fast[period][PREV];
-        if ((signal_method &  16) != 0) result &= ma_medium[period][CURR] - ma_fast[period][CURR] > ma_slow[period][CURR] - ma_medium[period][CURR];
-        if ((signal_method &  32) != 0) result &= (ma_medium[period][PREV] > ma_slow[period][PREV] || ma_medium[period][FAR] > ma_slow[period][FAR]);
-        if ((signal_method &  64) != 0) result &= (ma_fast[period][PREV] > ma_medium[period][PREV] || ma_fast[period][FAR] > ma_medium[period][FAR]);
+      case ORDER_TYPE_SELL:
+        _signal  = _MA(MA_FAST, CURR)   < _MA(MA_MEDIUM, CURR) - _level;
+        _signal &= _MA(MA_MEDIUM, CURR) < _MA(MA_SLOW, CURR) - _level;
+        if ((_method & OPEN_METHOD1) != 0) _signal &= _MA(MA_FAST, CURR) < _MA(MA_SLOW, CURR) - _level;
+        if ((_method & OPEN_METHOD2) != 0) _signal &= _MA(MA_MEDIUM, CURR) < _MA(MA_SLOW, CURR);
+        if ((_method & OPEN_METHOD3) != 0) _signal &= _MA(MA_SLOW, CURR) < _MA(MA_SLOW, PREV);
+        if ((_method & OPEN_METHOD4) != 0) _signal &= _MA(MA_FAST, CURR) < _MA(MA_FAST, PREV);
+        if ((_method & OPEN_METHOD5) != 0) _signal &= _MA(MA_MEDIUM, CURR) - _MA(MA_FAST, CURR) > _MA(MA_SLOW, CURR) - _MA(MA_MEDIUM, CURR);
+        if ((_method & OPEN_METHOD6) != 0) _signal &= (_MA(MA_MEDIUM, PREV) > _MA(MA_SLOW, PREV) || _MA(MA_MEDIUM, FAR) > _MA(MA_SLOW, FAR));
+        if ((_method & OPEN_METHOD7) != 0) _signal &= (_MA(MA_FAST, PREV) > _MA(MA_MEDIUM, PREV) || _MA(MA_FAST, FAR) > _MA(MA_MEDIUM, FAR));
         break;
     }
-    // result &= signal_method <= 0 || Convert::ValueToOp(curr_trend) == cmd;
-    if (result) {
-      logger.Add(V_DEBUG, StringFormat("%s:%d: Signal: %d/%d/%d/%g", __FUNCTION__, __LINE__, cmd, tf, signal_method, signal_level));
-    }
+    // _signal &= _method <= 0 || Convert::ValueToOp(curr_trend) == cmd;
+    return _signal;
+  }
+
+  bool Draw() {
+    #include <EA31337-classes\Draw.mqh>
+    /* @todo
+    Draw::TLine(StringFormat("%s%s%d", market.GetChartSymbol(), "MA Fast", i),   ma_fast[index][i],   ma_fast[index][i+1],    iTime(NULL, 0, shift), iTime(NULL, 0, shift+1), clrBlue);
+    Draw::TLine(StringFormat("%s%s%d", market.GetChartSymbol(), "MA Medium", i), ma_medium[index][i], ma_medium[index][i+1],  iTime(NULL, 0, shift), iTime(NULL, 0, shift+1), clrYellow);
+    Draw::TLine(StringFormat("%s%s%d", market.GetChartSymbol(), "MA Slow", i),   ma_slow[index][i],   ma_slow[index][i+1],    iTime(NULL, 0, shift), iTime(NULL, 0, shift+1), clrGray);
     */
-    return result;
+    return true;
   }
 };
 
-class MA_I : public Indicator {
+class I_MA : public Indicator {
 
 protected:
   // Enums.
   enum ENUM_MA { MA_FAST = 0, MA_MEDIUM = 1, MA_SLOW = 2 };
 
 public:
+
+  /**
+   * Class constructor.
+   */
+  void I_MA() : Indicator("MA") {
+  }
 
   /**
    * Get period value from settings.
@@ -200,19 +203,19 @@ public:
     double _ma_value;
     for (ENUM_MA k = 0; k <= MA_SLOW; k++) {
       #ifdef __MQL4__
-      _ma_value = iMA(i_symbol, i_tf, GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k), GetShift(k));
+      _ma_value = iMA(symbol, tf, GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k), GetShift(k));
       #else // __MQL5__
       int _handle;
       double _ma_values[];
-      _handle = iMA(i_symbol, i_tf, GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k));
+      _handle = iMA(symbol, tf, GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k));
       if (CopyBuffer(_handle, 0, 0, 1, _ma_values) < 0) {
-        logger.Error("Error in copying data!", __FUNCTION__ . ":" . __LINE__ . ": ");
-        return False;
+        logger.Error("Error in copying data!", __FUNCTION__ + ": ");
+        return false;
       }
       _ma_value = _ma_values[0];
       #endif
       NewValue(_ma_value);
     }
-    return True;
+    return true;
   }
 };
