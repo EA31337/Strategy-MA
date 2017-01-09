@@ -32,28 +32,16 @@
  */
 
 // Includes.
+#include "I_MA.mqh"
 #include <EA31337-classes\Strategy.mqh>
 #include <EA31337-classes\Strategies.mqh>
 
 // User inputs.
-#ifdef __input__ input #endif string __MA_Parameters__ = "-- Settings for the Moving Average indicator --"; // >>> MA <<<
-#ifdef __input__ input #endif int MA_Period_Fast = 17; // Period Fast
-#ifdef __input__ input #endif int MA_Period_Medium = 15; // Period Medium
-#ifdef __input__ input #endif int MA_Period_Slow = 48; // Period Slow
-#ifdef __input__ input #endif string MA_Periods = ""; // Periods to override
-#ifdef __input__ input #endif double MA_Period_Ratio = 1.0; // Period ratio between timeframes (0.5-1.5)
-#ifdef __input__ input #endif int MA_Shift = 0; // Shift
-#ifdef __input__ input #endif int MA_Shift_Fast = 0; // Shift Fast (+1)
-#ifdef __input__ input #endif int MA_Shift_Medium = 0; // Shift Medium (+1)
-#ifdef __input__ input #endif int MA_Shift_Slow = 1; // Shift Slow (+1)
-#ifdef __input__ input #endif int MA_Shift_Far = 4; // Shift Far (+2)
-#ifdef __input__ input #endif string MA_Shifts = ""; // Shifts to override
-#ifdef __input__ input #endif ENUM_MA_METHOD MA_Method = 1; // MA Method
-#ifdef __input__ input #endif ENUM_APPLIED_PRICE MA_Applied_Price = 3; // Applied Price
-#ifdef __input__ input #endif double MA_SignalLevel = 1.2; // Signal level
-#ifdef __input__ input #endif int MA_SignalMethod = -98; // Signal method (-127-127)
-#ifdef __input__ input #endif string MA_SignalMethods = ""; // Signal methods
+#ifdef __input__ input #endif string MA_Override = ""; // Params to override
 
+/**
+ * Strategy class.
+ */
 class S_MA : public Strategy {
 private:
 
@@ -130,92 +118,6 @@ public:
     Draw::TLine(StringFormat("%s%s%d", market.GetChartSymbol(), "MA Medium", i), ma_medium[index][i], ma_medium[index][i+1],  iTime(NULL, 0, shift), iTime(NULL, 0, shift+1), clrYellow);
     Draw::TLine(StringFormat("%s%s%d", market.GetChartSymbol(), "MA Slow", i),   ma_slow[index][i],   ma_slow[index][i+1],    iTime(NULL, 0, shift), iTime(NULL, 0, shift+1), clrGray);
     */
-    return true;
-  }
-};
-
-class I_MA : public Indicator {
-
-protected:
-  // Enums.
-  enum ENUM_MA { MA_FAST = 0, MA_MEDIUM = 1, MA_SLOW = 2 };
-
-public:
-
-  /**
-   * Class constructor.
-   */
-  void I_MA() : Indicator("MA") {
-  }
-
-  /**
-   * Get period value from settings.
-   */
-  int GetPeriod(ENUM_MA _ma_type) {
-    switch (_ma_type) {
-      default:
-      case MA_FAST:   return MA_Period_Fast;
-      case MA_MEDIUM: return MA_Period_Medium;
-      case MA_SLOW:   return MA_Period_Slow;
-    }
-  }
-
-  /**
-   * Get shift value from settings.
-   */
-  int GetShift(ENUM_MA _ma_type) {
-    switch (_ma_type) {
-      default:
-      case MA_FAST:   return MA_Shift_Fast;
-      case MA_MEDIUM: return MA_Shift_Medium;
-      case MA_SLOW:   return MA_Shift_Slow;
-    }
-  }
-
-  /**
-   * Get method value from settings.
-   */
-  ENUM_MA_METHOD GetMethod(ENUM_MA _ma_type) {
-    switch (_ma_type) {
-      default:
-      case MA_FAST:   return MA_Method;
-      case MA_MEDIUM: return MA_Method;
-      case MA_SLOW:   return MA_Method;
-    }
-  }
-
-  /**
-   * Get applied price value from settings.
-   */
-  ENUM_APPLIED_PRICE GetAppliedPrice(ENUM_MA _ma_type) {
-    switch (_ma_type) {
-      default:
-      case MA_FAST:   return MA_Applied_Price;
-      case MA_MEDIUM: return MA_Applied_Price;
-      case MA_SLOW:   return MA_Applied_Price;
-    }
-  }
-
-  /**
-   * Calculates the Moving Average indicator.
-   */
-  bool Update() {
-    double _ma_value;
-    for (ENUM_MA k = 0; k <= MA_SLOW; k++) {
-      #ifdef __MQL4__
-      _ma_value = iMA(symbol, tf, GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k), GetShift(k));
-      #else // __MQL5__
-      int _handle;
-      double _ma_values[];
-      _handle = iMA(symbol, tf, GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k));
-      if (CopyBuffer(_handle, 0, 0, 1, _ma_values) < 0) {
-        logger.Error("Error in copying data!", __FUNCTION__ + ": ");
-        return false;
-      }
-      _ma_value = _ma_values[0];
-      #endif
-      NewValue(_ma_value);
-    }
     return true;
   }
 };
