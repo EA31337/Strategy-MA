@@ -34,7 +34,6 @@
 // Includes.
 #include "I_MA.mqh"
 #include <EA31337-classes\Strategy.mqh>
-#include <EA31337-classes\Strategies.mqh>
 
 // User inputs.
 #ifdef __input__ input #endif string MA_Override = ""; // Params to override
