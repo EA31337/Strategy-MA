@@ -49,12 +49,8 @@ public:
   /**
    * Class constructor.
    */
-  S_MA(
-    string _name,
-    ENUM_TIMEFRAMES _tf,
-    uint _magic_no
-  ) :
-    Strategy(_name, _tf, _magic_no)
+  S_MA(string _name, StrategyConf &_conf, Market *_market = NULL, Timeframe *_tf = NULL, Log *_log = NULL)
+    : Strategy(_name, _conf, _market, _tf, _log)
   {
   }
 
@@ -63,21 +59,23 @@ public:
    */
   bool Init() {
     bool initiated = true;
-    data = new I_MA();
+    IndicatorConf indi_conf = { S_IND_MA };
+    data = new I_MA(indi_conf, tf);
     initiated &= data.Update();
     initiated &= data.GetValue(MA_FAST) > 0;
     return initiated;
   }
 
   /**
-   * Check whether signal is on buy or sell.
+   * Checks strategy trade signal.
    *
    * @param
    *   _cmd (int) - type of trade order command
-   *   _method (int) - signal method to use by using bitwise AND operation
+   *   _base_method (int) - base signal method
+   *   _open_method (int) - open signal method to use by using bitwise AND operation
    *   _level (double) - signal level to consider the signal
    */
-  bool Signal(ENUM_ORDER_TYPE _cmd, int _method = 0, double _level = 0.0) {
+  bool Signal(ENUM_ORDER_TYPE _cmd, int _base_method, int _open_method = 0, double _level = 0.0) {
     bool _signal = false;
     _level *= market.GetPipSize();
     #define _MA(type, index) data.GetValue(type, index)
@@ -86,24 +84,24 @@ public:
       case ORDER_TYPE_BUY:
         _signal  = _MA(MA_FAST, CURR) > _MA(MA_MEDIUM, CURR) + _level;
         _signal &= _MA(MA_MEDIUM, CURR) > _MA(MA_SLOW, CURR) + _level;
-        if ((_method & OPEN_METHOD1) != 0) _signal &= _MA(MA_FAST, CURR) > _MA(MA_SLOW, CURR) + _level;
-        if ((_method & OPEN_METHOD2) != 0) _signal &= _MA(MA_MEDIUM, CURR) > _MA(MA_SLOW, CURR);
-        if ((_method & OPEN_METHOD3) != 0) _signal &= _MA(MA_SLOW, CURR) > _MA(MA_SLOW, PREV);
-        if ((_method & OPEN_METHOD4) != 0) _signal &= _MA(MA_FAST, CURR) > _MA(MA_FAST, PREV);
-        if ((_method & OPEN_METHOD5) != 0) _signal &= _MA(MA_FAST, CURR) - _MA(MA_MEDIUM, CURR) > _MA(MA_MEDIUM, CURR) - _MA(MA_SLOW, CURR);
-        if ((_method & OPEN_METHOD6) != 0) _signal &= (_MA(MA_MEDIUM, PREV) < _MA(MA_SLOW, PREV) || _MA(MA_MEDIUM, FAR) < _MA(MA_SLOW, FAR));
-        if ((_method & OPEN_METHOD7) != 0) _signal &= (_MA(MA_FAST, PREV) < _MA(MA_MEDIUM, PREV) || _MA(MA_FAST, FAR) < _MA(MA_MEDIUM, FAR));
+        if ((_open_method & OPEN_METHOD1) != 0) _signal &= _MA(MA_FAST, CURR) > _MA(MA_SLOW, CURR) + _level;
+        if ((_open_method & OPEN_METHOD2) != 0) _signal &= _MA(MA_MEDIUM, CURR) > _MA(MA_SLOW, CURR);
+        if ((_open_method & OPEN_METHOD3) != 0) _signal &= _MA(MA_SLOW, CURR) > _MA(MA_SLOW, PREV);
+        if ((_open_method & OPEN_METHOD4) != 0) _signal &= _MA(MA_FAST, CURR) > _MA(MA_FAST, PREV);
+        if ((_open_method & OPEN_METHOD5) != 0) _signal &= _MA(MA_FAST, CURR) - _MA(MA_MEDIUM, CURR) > _MA(MA_MEDIUM, CURR) - _MA(MA_SLOW, CURR);
+        if ((_open_method & OPEN_METHOD6) != 0) _signal &= (_MA(MA_MEDIUM, PREV) < _MA(MA_SLOW, PREV) || _MA(MA_MEDIUM, FAR) < _MA(MA_SLOW, FAR));
+        if ((_open_method & OPEN_METHOD7) != 0) _signal &= (_MA(MA_FAST, PREV) < _MA(MA_MEDIUM, PREV) || _MA(MA_FAST, FAR) < _MA(MA_MEDIUM, FAR));
         break;
       case ORDER_TYPE_SELL:
         _signal  = _MA(MA_FAST, CURR)   < _MA(MA_MEDIUM, CURR) - _level;
         _signal &= _MA(MA_MEDIUM, CURR) < _MA(MA_SLOW, CURR) - _level;
-        if ((_method & OPEN_METHOD1) != 0) _signal &= _MA(MA_FAST, CURR) < _MA(MA_SLOW, CURR) - _level;
-        if ((_method & OPEN_METHOD2) != 0) _signal &= _MA(MA_MEDIUM, CURR) < _MA(MA_SLOW, CURR);
-        if ((_method & OPEN_METHOD3) != 0) _signal &= _MA(MA_SLOW, CURR) < _MA(MA_SLOW, PREV);
-        if ((_method & OPEN_METHOD4) != 0) _signal &= _MA(MA_FAST, CURR) < _MA(MA_FAST, PREV);
-        if ((_method & OPEN_METHOD5) != 0) _signal &= _MA(MA_MEDIUM, CURR) - _MA(MA_FAST, CURR) > _MA(MA_SLOW, CURR) - _MA(MA_MEDIUM, CURR);
-        if ((_method & OPEN_METHOD6) != 0) _signal &= (_MA(MA_MEDIUM, PREV) > _MA(MA_SLOW, PREV) || _MA(MA_MEDIUM, FAR) > _MA(MA_SLOW, FAR));
-        if ((_method & OPEN_METHOD7) != 0) _signal &= (_MA(MA_FAST, PREV) > _MA(MA_MEDIUM, PREV) || _MA(MA_FAST, FAR) > _MA(MA_MEDIUM, FAR));
+        if ((_open_method & OPEN_METHOD1) != 0) _signal &= _MA(MA_FAST, CURR) < _MA(MA_SLOW, CURR) - _level;
+        if ((_open_method & OPEN_METHOD2) != 0) _signal &= _MA(MA_MEDIUM, CURR) < _MA(MA_SLOW, CURR);
+        if ((_open_method & OPEN_METHOD3) != 0) _signal &= _MA(MA_SLOW, CURR) < _MA(MA_SLOW, PREV);
+        if ((_open_method & OPEN_METHOD4) != 0) _signal &= _MA(MA_FAST, CURR) < _MA(MA_FAST, PREV);
+        if ((_open_method & OPEN_METHOD5) != 0) _signal &= _MA(MA_MEDIUM, CURR) - _MA(MA_FAST, CURR) > _MA(MA_SLOW, CURR) - _MA(MA_MEDIUM, CURR);
+        if ((_open_method & OPEN_METHOD6) != 0) _signal &= (_MA(MA_MEDIUM, PREV) > _MA(MA_SLOW, PREV) || _MA(MA_MEDIUM, FAR) > _MA(MA_SLOW, FAR));
+        if ((_open_method & OPEN_METHOD7) != 0) _signal &= (_MA(MA_FAST, PREV) > _MA(MA_MEDIUM, PREV) || _MA(MA_FAST, FAR) > _MA(MA_MEDIUM, FAR));
         break;
     }
     // _signal &= _method <= 0 || Convert::ValueToOp(curr_trend) == cmd;
