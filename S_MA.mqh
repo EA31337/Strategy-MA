@@ -36,7 +36,10 @@
 #include <EA31337-classes\Strategy.mqh>
 
 // User inputs.
-#ifdef __input__ input #endif string MA_Override = ""; // Params to override
+#ifdef __input__ input #endif double MA_SignalBaseLevel = 0;    // Signal base level
+#ifdef __input__ input #endif int    MA_SignalOpenMethod = -98; // Signal open method (-127-127)
+#ifdef __input__ input #endif double MA_SignalLevel = 1.2;      // Signal level
+#ifdef __input__ input #endif string MA_Override = "";          // Params to override
 
 /**
  * Strategy class.
@@ -49,8 +52,8 @@ public:
   /**
    * Class constructor.
    */
-  S_MA(string _name, StrategyConf &_conf, Market *_market = NULL, Timeframe *_tf = NULL, Log *_log = NULL)
-    : Strategy(_name, _conf, _market, _tf, _log)
+  S_MA(string _name, StrategyParams &_params, Market *_market = NULL, Timeframe *_tf = NULL, Log *_log = NULL)
+    : Strategy(_name, _params, _market, _tf, _log)
   {
   }
 
@@ -59,10 +62,10 @@ public:
    */
   bool Init() {
     bool initiated = true;
-    IndicatorConf indi_conf = { S_IND_MA };
-    data = new I_MA(indi_conf, tf);
+    IndicatorParams indi_params = { S_IND_MA };
+    data = new I_MA(indi_params, tf);
     initiated &= data.Update();
-    initiated &= data.GetValue(MA_FAST) > 0;
+    initiated &= data.GetValue(MA_FAST, CURR, (double) TYPE_DOUBLE) > 0;
     return initiated;
   }
 
@@ -77,8 +80,9 @@ public:
    */
   bool Signal(ENUM_ORDER_TYPE _cmd, int _base_method, int _open_method = 0, double _level = 0.0) {
     bool _signal = false;
+    data.Update();
     _level *= market.GetPipSize();
-    #define _MA(type, index) data.GetValue(type, index)
+    #define _MA(type, index) data.GetValue(type, index, (double) TYPE_DOUBLE)
 
     switch (_cmd) {
       case ORDER_TYPE_BUY:
@@ -106,6 +110,9 @@ public:
     }
     // _signal &= _method <= 0 || Convert::ValueToOp(curr_trend) == cmd;
     return _signal;
+  }
+  bool Signal(ENUM_ORDER_TYPE _cmd) {
+    return Signal(_cmd, GetSignalBaseMethod(), GetSignalOpenMethod(), GetSignalLevel());
   }
 
   bool Draw() {

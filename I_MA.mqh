@@ -47,8 +47,6 @@
 #ifdef __input__ input #endif int MA_Shift_Far = 4; // Shift Far (+2)
 #ifdef __input__ input #endif ENUM_MA_METHOD MA_Method = 1; // MA Method
 #ifdef __input__ input #endif ENUM_APPLIED_PRICE MA_Applied_Price = 3; // Applied Price
-#ifdef __input__ input #endif double MA_SignalLevel = 1.2; // Signal level
-#ifdef __input__ input #endif int MA_SignalMethod = -98; // Signal method (-127-127)
 
 /**
  * Indicator class.
@@ -64,7 +62,7 @@ public:
   /**
    * Class constructor.
    */
-  void I_MA(IndicatorConf &_indi, Timeframe *_tf = NULL) : Indicator(_indi, _tf) {
+  void I_MA(IndicatorParams &_params, Timeframe *_tf = NULL) : Indicator(_params, _tf) {
   }
 
   /**
@@ -122,7 +120,7 @@ public:
     double _ma_value;
     for (ENUM_MA k = 0; k <= MA_SLOW; k++) {
       #ifdef __MQL4__
-      _ma_value = iMA(symbol, tf, GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k), GetShift(k));
+      _ma_value = iMA(market.GetSymbol(), tf.GetTf(), GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k), GetShift(k));
       #else // __MQL5__
       int _handle;
       double _ma_values[];
