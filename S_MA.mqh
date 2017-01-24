@@ -52,8 +52,7 @@ public:
   /**
    * Class constructor.
    */
-  S_MA(string _name, StrategyParams &_params, Market *_market = NULL, Timeframe *_tf = NULL, Log *_log = NULL)
-    : Strategy(_name, _params, _market, _tf, _log)
+  void S_MA(StrategyParams &_params)
   {
   }
 
@@ -63,9 +62,9 @@ public:
   bool Init() {
     bool initiated = true;
     IndicatorParams indi_params = { S_IND_MA };
-    data = new I_MA(indi_params, tf);
-    initiated &= data.Update();
-    initiated &= data.GetValue(MA_FAST, CURR, (double) TYPE_DOUBLE) > 0;
+    params.data = new I_MA(indi_params); // @todo: Provide instance of chart, instead of create a new one.
+    initiated &= IndicatorInfo().Update();
+    initiated &= IndicatorInfo().GetValue(MA_FAST, CURR, (double) TYPE_DOUBLE) > 0;
     return initiated;
   }
 
@@ -80,9 +79,9 @@ public:
    */
   bool Signal(ENUM_ORDER_TYPE _cmd, int _base_method, int _open_method = 0, double _level = 0.0) {
     bool _signal = false;
-    data.Update();
-    _level *= market.GetPipSize();
-    #define _MA(type, index) data.GetValue(type, index, (double) TYPE_DOUBLE)
+    IndicatorInfo().Update();
+    _level *= MarketInfo().GetPipSize();
+    #define _MA(type, index) IndicatorInfo().GetValue(type, index, (double) TYPE_DOUBLE)
 
     switch (_cmd) {
       case ORDER_TYPE_BUY:

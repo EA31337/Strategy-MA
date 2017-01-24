@@ -62,7 +62,7 @@ public:
   /**
    * Class constructor.
    */
-  void I_MA(IndicatorParams &_params, Timeframe *_tf = NULL) : Indicator(_params, _tf) {
+  void I_MA(IndicatorParams &_params) : Indicator(_params) {
   }
 
   /**
@@ -120,7 +120,7 @@ public:
     double _ma_value;
     for (ENUM_MA k = 0; k <= MA_SLOW; k++) {
       #ifdef __MQL4__
-      _ma_value = iMA(market.GetSymbol(), tf.GetTf(), GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k), GetShift(k));
+      _ma_value = iMA(GetSymbol(), GetTf(), GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k), GetShift(k));
       #else // __MQL5__
       int _handle;
       double _ma_values[];
