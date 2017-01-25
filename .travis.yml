@@ -4,7 +4,7 @@ env:
     CWD="$TRAVIS_BUILD_DIR"
     WINDIR="$HOME/.wine/drive_c/windows"
 before_install:
-- git -C "$HOME" clone -q https://github.com/EA31337/EA31337-classes include/EA31337-classes
+- git -C "$HOME" clone -q https://github.com/EA31337/EA31337-classes
 install:
 - sudo sh -s < <(curl -L https://raw.githubusercontent.com/EA31337/FX-MT-VM/master/scripts/provision.sh)
 - test ! -d "$WINDIR/MQL4" && mkdir -vp "$WINDIR"/MQL4

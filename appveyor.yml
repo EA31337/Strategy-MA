@@ -7,7 +7,7 @@ before_test:
 test_script:
 - metaeditor /s /compile:. /inc:.. /log:errors.log || exit /b 0
 - type *.log
-- type *.log | find /v "Result" | findstr "error" && exit /b 1
-- type *.log | find /v "Result" | findstr "warning" && exit /b 1
+- type *.log | find /v "Result" | findstr "error" && exit /b 1 || exit /b 0
+- type *.log | find /v "Result" | findstr "warning" && exit /b 1 || exit /b 0
 build: off
 platform: x86
