@@ -45,9 +45,10 @@
  * Strategy class.
  */
 class S_MA : public Strategy {
-private:
 
-public:
+  private:
+
+  public:
 
   /**
    * Class constructor.

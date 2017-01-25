@@ -1,14 +1,13 @@
-environment:
-  matrix:
-  - ver: 4
-  - ver: 5
 install:
-- curl -sLo mql.exe https://github.com/EA31337/FX-MT-VM/releases/download/4.x/mql.exe
-- git clone -q https://github.com/EA31337/EA31337-classes MQL%ver%/include/EA31337-classes
+- curl -sLo metaeditor.exe https://github.com/EA31337/FX-MT-VM/releases/download/4.x/metaeditor.exe
+- git clone -q --recursive https://github.com/EA31337/EA31337-classes ../include/EA31337-classes
 before_test:
-- # mklink /D "MQL%ver%\include\EA31337-strategies" "%cd%"
+#- mklink /D "..\include\EA31337-classes" "%cd%"
 - pwd
 test_script:
-- forfiles /m *.mqh /c "mql /s /mql%ver% @relpath"
+- metaeditor /s /compile:. /inc:.. /log:errors.log || exit /b 0
+- type *.log
+- type *.log | find /v "Result" | findstr "error" && exit /b 1
+- type *.log | find /v "Result" | findstr "warning" && exit /b 1
 build: off
 platform: x86

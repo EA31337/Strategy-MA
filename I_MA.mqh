@@ -124,7 +124,7 @@ public:
       #else // __MQL5__
       int _handle;
       double _ma_values[];
-      _handle = iMA(market.GetSymbol(), tf.GetTf(), GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k));
+      _handle = iMA(GetSymbol(), GetTf(), GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k));
       if (CopyBuffer(_handle, 0, 0, 1, _ma_values) < 0) {
         logger.Error("Error in copying data!", __FUNCTION__ + ": ");
         return false;
