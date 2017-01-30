@@ -16,9 +16,9 @@ before_script:
 - ln -vs "$HOME" "$WINDIR"/MQL5/include
 script:
 - echo Compiling MQL4...
-- for file in *.mqh *.mq4; do wine mql /s /mql4 "$file"; done
+- for file in */*.mqh */*.mq4; do wine mql /s /mql4 "$file"; done
 - echo Compiling MQL5...
-- for file in *.mqh *.mq5; do wine mql /s /mql5 "$file"; done
+- for file in */*.mqh */*.mq5; do wine mql /s /mql5 "$file"; done
 notifications:
   email:
     on_success: change
