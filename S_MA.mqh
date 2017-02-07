@@ -78,7 +78,7 @@ class S_MA : public Strategy {
    *   _open_method (int) - open signal method to use by using bitwise AND operation
    *   _level (double) - signal level to consider the signal
    */
-  bool Signal(ENUM_ORDER_TYPE _cmd, int _base_method, int _open_method = 0, double _level = 0.0) {
+  virtual bool Signal(ENUM_ORDER_TYPE _cmd, int _base_method, int _open_method = 0, double _level = 0.0) {
     bool _signal = false;
     IndicatorInfo().Update();
     _level *= MarketInfo().GetPipSize();
@@ -111,7 +111,7 @@ class S_MA : public Strategy {
     // _signal &= _method <= 0 || Convert::ValueToOp(curr_trend) == cmd;
     return _signal;
   }
-  bool Signal(ENUM_ORDER_TYPE _cmd) {
+  virtual bool Signal(ENUM_ORDER_TYPE _cmd) {
     return Signal(_cmd, GetSignalBaseMethod(), GetSignalOpenMethod(), GetSignalLevel());
   }
 
