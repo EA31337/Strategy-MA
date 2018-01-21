@@ -67,41 +67,6 @@ class I_MA : public Indicator {
     }
 
     /**
-     * Returns the indicator value.
-     *
-     * @docs
-     * - https://docs.mql4.com/indicators/ima
-     * - https://www.mql5.com/en/docs/indicators/ima
-     */
-    static double iMA(
-        string _symbol,
-        ENUM_TIMEFRAMES _tf,
-        uint _ma_period,
-        int _ma_shift,
-        ENUM_MA_METHOD _ma_method,          // (MT4/MT5): MODE_SMA, MODE_EMA, MODE_SMMA, MODE_LWMA
-        ENUM_APPLIED_PRICE _applied_price,  // (MT4/MT5): PRICE_CLOSE, PRICE_OPEN, PRICE_HIGH, PRICE_LOW, PRICE_MEDIAN, PRICE_TYPICAL, PRICE_WEIGHTED
-        int _shift = 0
-        ) {
-      #ifdef __MQL4__
-      return ::iMA(_symbol, _tf, _ma_period, _ma_shift, _ma_method, _applied_price, _shift);
-      #else // __MQL5__
-      double _res[];
-      int _handle = ::iMA(_symbol, _tf, _ma_period, _ma_shift, _ma_method, _applied_price);
-      return CopyBuffer(_handle, 0, _shift, 1, _res) > 0 ? _res[0] : EMPTY_VALUE;
-      #endif
-    }
-    double iMA(
-        uint _ma_period,
-        int _ma_shift,
-        ENUM_MA_METHOD _ma_method,
-        ENUM_APPLIED_PRICE _applied_price,
-        int _shift = 0) {
-      double _value = iMA(GetSymbol(), GetTf(), _ma_period, _ma_shift, _ma_method, _applied_price, _shift);
-      CheckLastError();
-      return _value;
-    }
-
-    /**
      * Get period value from settings.
      */
     int GetPeriod(ENUM_MA _ma_type) {
@@ -156,7 +121,7 @@ class I_MA : public Indicator {
       bool _res = true;
       double _ma_value;
       for (ENUM_MA k = 0; k <= MA_SLOW; k++) {
-        _ma_value = iMA(GetSymbol(), GetTf(), GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k), GetShift(k));
+        _ma_value = Indicators::iMA(GetSymbol(), GetTf(), GetPeriod(k), GetShift(k), GetMethod(k), GetAppliedPrice(k), GetShift(k));
         _res &= Add(_ma_value, k);
       }
       return _res;
