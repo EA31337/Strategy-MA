@@ -62,7 +62,7 @@ class S_MA : public Strategy {
    */
   bool Init() {
     bool initiated = true;
-    IndicatorParams indi_params = { S_IND_MA };
+    IndicatorParams indi_params = { INDI_MA };
     params.data = new I_MA(indi_params); // @todo: Provide instance of chart, instead of create a new one.
     initiated &= IndicatorInfo().Update();
     initiated &= IndicatorInfo().GetValue(MA_FAST, CURR, (double) TYPE_DOUBLE) > 0;
