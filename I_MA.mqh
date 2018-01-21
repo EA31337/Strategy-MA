@@ -131,7 +131,7 @@ public:
       }
       _ma_value = _ma_values[0];
       #endif
-      NewValue(_ma_value);
+      Add(_ma_value);
     }
     return true;
   }
