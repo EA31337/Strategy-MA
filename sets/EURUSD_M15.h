@@ -12,15 +12,12 @@ struct Stg_MA_EURUSD_M15_Params : Stg_MA_Params {
     MA_Period = 2;
     MA_Applied_Price = 3;
     MA_Shift = 0;
-    MA_TrailingStopMethod = 6;
-    MA_TrailingProfitMethod = 11;
+    MA_SignalOpenMethod = -63;
     MA_SignalOpenLevel = 36;
-    MA_SignalBaseMethod = -63;
-    MA_SignalOpenMethod1 = 389;
-    MA_SignalOpenMethod2 = 0;
+    MA_SignalCloseMethod = 1;
     MA_SignalCloseLevel = 36;
-    MA_SignalCloseMethod1 = 1;
-    MA_SignalCloseMethod2 = 0;
+    MA_PriceLimitMethod = 0;
+    MA_PriceLimitLevel = 0;
     MA_MaxSpread = 4;
   }
 };
