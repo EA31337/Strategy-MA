@@ -10,6 +10,8 @@ struct Stg_MA_EURUSD_H4_Params : Stg_MA_Params {
     symbol = "EURUSD";
     tf = PERIOD_H4;
     MA_Period = 2;
+    MA_MA_Shift = 0;
+    MA_Method = 1;
     MA_Applied_Price = 3;
     MA_Shift = 0;
     MA_SignalOpenMethod = 0;

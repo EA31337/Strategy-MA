@@ -15,15 +15,11 @@
 
 // User input params.
 INPUT string __MA_Parameters__ = "-- MA strategy params --";  // >>> MA <<<
-INPUT int MA_Period_Fast = 12;                                // Period Fast
-INPUT int MA_Period_Medium = 12;                              // Period Medium
-INPUT int MA_Period_Slow = 4;                                 // Period Slow
-INPUT int MA_Shift = 8;                                       // Shift
-INPUT int MA_Shift_Fast = 10;                                 // Shift Fast (+1)
-INPUT int MA_Shift_Medium = 10;                               // Shift Medium (+1)
-INPUT int MA_Shift_Slow = 5;                                  // Shift Slow (+1)
+INPUT int MA_Period = 12;                                     // Period
+INPUT int MA_MA_Shift = 0;                                    // MA Shift
 INPUT ENUM_MA_METHOD MA_Method = 1;                           // MA Method
 INPUT ENUM_APPLIED_PRICE MA_Applied_Price = 6;                // Applied Price
+INPUT int MA_Shift = 0;                                       // Shift
 INPUT int MA_SignalOpenMethod = 48;                           // Signal open method (-127-127)
 INPUT double MA_SignalOpenLevel = -0.6;                       // Signal open level
 INPUT int MA_SignalCloseMethod = 48;                          // Signal close method (-127-127)
@@ -35,6 +31,8 @@ INPUT double MA_MaxSpread = 6.0;                              // Max spread to t
 // Struct to define strategy parameters to override.
 struct Stg_MA_Params : Stg_Params {
   unsigned int MA_Period;
+  int MA_MA_Shift;
+  ENUM_MA_METHOD MA_Method;
   ENUM_APPLIED_PRICE MA_Applied_Price;
   int MA_Shift;
   int MA_SignalOpenMethod;
@@ -48,6 +46,8 @@ struct Stg_MA_Params : Stg_Params {
   // Constructor: Set default param values.
   Stg_MA_Params()
       : MA_Period(::MA_Period),
+        MA_MA_Shift(::MA_MA_Shift),
+        MA_Method(::MA_Method),
         MA_Applied_Price(::MA_Applied_Price),
         MA_Shift(::MA_Shift),
         MA_SignalOpenMethod(::MA_SignalOpenMethod),
@@ -102,9 +102,9 @@ class Stg_MA : public Strategy {
     }
     // Initialize strategy parameters.
     ChartParams cparams(_tf);
-    MA_Params adx_params(_params.MA_Period, _params.MA_Applied_Price);
-    IndicatorParams adx_iparams(10, INDI_MA);
-    StgParams sparams(new Trade(_tf, _Symbol), new Indi_MA(adx_params, adx_iparams, cparams), NULL, NULL);
+    MA_Params ma_params(_params.MA_Period, _params.MA_MA_Shift, _params.MA_Method, _params.MA_Applied_Price);
+    IndicatorParams ma_iparams(10, INDI_MA);
+    StgParams sparams(new Trade(_tf, _Symbol), new Indi_MA(ma_params, ma_iparams, cparams), NULL, NULL);
     sparams.logger.SetLevel(_log_level);
     sparams.SetMagicNo(_magic_no);
     sparams.SetSignals(_params.MA_SignalOpenMethod, _params.MA_SignalOpenLevel, _params.MA_SignalCloseMethod,
@@ -122,7 +122,7 @@ class Stg_MA : public Strategy {
    *   _cmd (int) - type of trade order command
    *   period (int) - period to check for
    *   _method (int) - signal method to use by using bitwise AND operation
-   *   _level1 (double) - signal level to consider the signal
+   *   _level (double) - signal level to consider the signal
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, double _level = 0.0) {
     bool _result = false;
@@ -141,9 +141,7 @@ class Stg_MA : public Strategy {
     double ma_1 = ((Indi_MA *) this.Data()).GetValue(1);
     double ma_2 = ((Indi_MA *) this.Data()).GetValue(2);
     */
-    if (_level1 == EMPTY) _level1 = GetSignalLevel1();
-    if (_level2 == EMPTY) _level2 = GetSignalLevel2();
-    double gap = _level1 * pip_size;
+    double gap = _level * pip_size;
 
     switch (_cmd) {
       case ORDER_TYPE_BUY:
