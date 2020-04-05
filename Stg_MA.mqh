@@ -93,6 +93,7 @@ class Stg_MA : public Strategy {
     sparams.SetSignals(_params.MA_SignalOpenMethod, _params.MA_SignalOpenLevel, _params.MA_SignalCloseMethod,
                        _params.MA_SignalOpenFilterMethod, _params.MA_SignalOpenBoostMethod,
                        _params.MA_SignalCloseLevel);
+    sparams.SetPriceLimits(_params.MA_PriceLimitMethod, _params.MA_PriceLimitLevel);
     sparams.SetMaxSpread(_params.MA_MaxSpread);
     // Initialize strategy instance.
     Strategy *_strat = new Stg_MA(sparams, "MA");
