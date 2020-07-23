@@ -88,7 +88,7 @@ class Stg_MA : public Strategy {
     MAParams ma_params(_params.MA_Period, _params.MA_MA_Shift, _params.MA_Method, _params.MA_Applied_Price);
     ma_params.SetTf(_tf);
     StgParams sparams(new Trade(_tf, _Symbol), new Indi_MA(ma_params), NULL, NULL);
-    sparams.logger.SetLevel(_log_level);
+    sparams.logger.Ptr().SetLevel(_log_level);
     sparams.SetMagicNo(_magic_no);
     sparams.SetSignals(_params.MA_SignalOpenMethod, _params.MA_SignalOpenLevel, _params.MA_SignalCloseMethod,
                        _params.MA_SignalOpenFilterMethod, _params.MA_SignalOpenBoostMethod,
