@@ -10,14 +10,14 @@ ENUM_MA_METHOD MA_Method = 1;             // MA Method
 ENUM_APPLIED_PRICE MA_Applied_Price = 6;  // Applied Price
 int MA_Shift = 0;                         // Shift
 int MA_SignalOpenMethod = 48;             // Signal open method (-127-127)
-double MA_SignalOpenLevel = -0.6;         // Signal open level
+float MA_SignalOpenLevel = -0.6f;         // Signal open level
 int MA_SignalOpenFilterMethod = 0;        // Signal open filter method
 int MA_SignalOpenBoostMethod = 0;         // Signal open boost method
 int MA_SignalCloseMethod = 48;            // Signal close method (-127-127)
-double MA_SignalCloseLevel = -0.6;        // Signal close level
+float MA_SignalCloseLevel = -0.6f;        // Signal close level
 int MA_PriceLimitMethod = 0;              // Price limit method
-double MA_PriceLimitLevel = 0;            // Price limit level
-double MA_MaxSpread = 6.0;                // Max spread to trade (pips)
+float MA_PriceLimitLevel = 0;             // Price limit level
+float MA_MaxSpread = 6.0f;                // Max spread to trade (pips)
 
 // Includes.
 #include <EA31337-classes/Indicators/Indi_MA.mqh>
@@ -31,14 +31,14 @@ struct Stg_MA_Params : StgParams {
   ENUM_APPLIED_PRICE MA_Applied_Price;
   int MA_Shift;
   int MA_SignalOpenMethod;
-  double MA_SignalOpenLevel;
+  float MA_SignalOpenLevel;
   int MA_SignalOpenFilterMethod;
   int MA_SignalOpenBoostMethod;
   int MA_SignalCloseMethod;
-  double MA_SignalCloseLevel;
+  float MA_SignalCloseLevel;
   int MA_PriceLimitMethod;
-  double MA_PriceLimitLevel;
-  double MA_MaxSpread;
+  float MA_PriceLimitLevel;
+  float MA_MaxSpread;
 
   // Constructor: Set default param values.
   Stg_MA_Params()
@@ -162,6 +162,6 @@ class Stg_MA : public Strategy {
         break;
       }
     }
-    return _result;
+    return (float)_result;
   }
 };
