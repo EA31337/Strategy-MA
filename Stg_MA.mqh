@@ -15,8 +15,8 @@ INPUT int MA_SignalOpenFilterMethod = 0;                                        
 INPUT int MA_SignalOpenBoostMethod = 0;                                             // Signal open boost method
 INPUT int MA_SignalCloseMethod = 48;                                                // Signal close method (-127-127)
 INPUT float MA_SignalCloseLevel = -0.6f;                                            // Signal close level
-INPUT int MA_PriceLimitMethod = 0;                                                  // Price limit method
-INPUT float MA_PriceLimitLevel = 0;                                                 // Price limit level
+INPUT int MA_PriceStopMethod = 0;                                                   // Price stop method
+INPUT float MA_PriceStopLevel = 0;                                                  // Price stop level
 INPUT int MA_TickFilterMethod = 0;                                                  // Tick filter method
 INPUT float MA_MaxSpread = 6.0f;                                                    // Max spread to trade (pips)
 INPUT int MA_Shift = 0;                                                             // Shift
@@ -44,7 +44,7 @@ struct Indi_MA_Params : public MAParams {
 struct Stg_MA_Params_Defaults : StgParams {
   Stg_MA_Params_Defaults()
       : StgParams(::MA_SignalOpenMethod, ::MA_SignalOpenFilterMethod, ::MA_SignalOpenLevel, ::MA_SignalOpenBoostMethod,
-                  ::MA_SignalCloseMethod, ::MA_SignalCloseLevel, ::MA_PriceLimitMethod, ::MA_PriceLimitLevel,
+                  ::MA_SignalCloseMethod, ::MA_SignalCloseLevel, ::MA_PriceStopMethod, ::MA_PriceStopLevel,
                   ::MA_TickFilterMethod, ::MA_MaxSpread, ::MA_Shift) {}
 } stg_ma_defaults;
 
@@ -147,9 +147,9 @@ class Stg_MA : public Strategy {
   }
 
   /**
-   * Gets price limit value for profit take or stop loss.
+   * Gets price stop value for profit take or stop loss.
    */
-  float PriceLimit(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, float _level = 0.0) {
+  float PriceStop(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, float _level = 0.0) {
     Indi_MA *_indi = Data();
     double _trail = _level * Market().GetPipSize();
     int _direction = Order::OrderDirection(_cmd, _mode);
