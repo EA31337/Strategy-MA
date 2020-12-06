@@ -3,10 +3,6 @@
  * Implements MA strategy based the Moving Average indicator.
  */
 
-// Includes.
-#include <EA31337-classes/Indicators/Indi_MA.mqh>
-#include <EA31337-classes/Strategy.mqh>
-
 // User params.
 INPUT float MA_LotSize = 0;                                                         // Lot size
 INPUT int MA_SignalOpenMethod = 48;                                                 // Signal open method (-127-127)
