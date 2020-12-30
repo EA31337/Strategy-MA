@@ -4,18 +4,19 @@
  */
 
 // User params.
-INPUT float MA_LotSize = 0;                                                         // Lot size
-INPUT int MA_SignalOpenMethod = 48;                                                 // Signal open method (-127-127)
-INPUT float MA_SignalOpenLevel = -0.6f;                                             // Signal open level
-INPUT int MA_SignalOpenFilterMethod = 0;                                            // Signal open filter method
-INPUT int MA_SignalOpenBoostMethod = 0;                                             // Signal open boost method
-INPUT int MA_SignalCloseMethod = 48;                                                // Signal close method (-127-127)
-INPUT float MA_SignalCloseLevel = -0.6f;                                            // Signal close level
-INPUT int MA_PriceStopMethod = 0;                                                   // Price stop method
-INPUT float MA_PriceStopLevel = 0;                                                  // Price stop level
-INPUT int MA_TickFilterMethod = 0;                                                  // Tick filter method
-INPUT float MA_MaxSpread = 6.0f;                                                    // Max spread to trade (pips)
-INPUT int MA_Shift = 0;                                                             // Shift
+INPUT float MA_LotSize = 0;               // Lot size
+INPUT int MA_SignalOpenMethod = 48;       // Signal open method (-127-127)
+INPUT float MA_SignalOpenLevel = -0.6f;   // Signal open level
+INPUT int MA_SignalOpenFilterMethod = 0;  // Signal open filter method
+INPUT int MA_SignalOpenBoostMethod = 0;   // Signal open boost method
+INPUT int MA_SignalCloseMethod = 48;      // Signal close method (-127-127)
+INPUT float MA_SignalCloseLevel = -0.6f;  // Signal close level
+INPUT int MA_PriceStopMethod = 0;         // Price stop method
+INPUT float MA_PriceStopLevel = 0;        // Price stop level
+INPUT int MA_TickFilterMethod = 0;        // Tick filter method
+INPUT float MA_MaxSpread = 6.0f;          // Max spread to trade (pips)
+INPUT int MA_Shift = 0;                   // Shift
+INPUT int MA_OrderCloseTime = -10;        // Order close time in mins (>0) or bars (<0)
 INPUT string __MA_Indi_MA_Parameters__ = "-- MA strategy: MA indicator params --";  // >>> MA strategy: MA indicator <<<
 INPUT int Indi_MA_Period = 12;                                                      // Period
 INPUT int Indi_MA_MA_Shift = 0;                                                     // MA Shift
@@ -41,7 +42,7 @@ struct Stg_MA_Params_Defaults : StgParams {
   Stg_MA_Params_Defaults()
       : StgParams(::MA_SignalOpenMethod, ::MA_SignalOpenFilterMethod, ::MA_SignalOpenLevel, ::MA_SignalOpenBoostMethod,
                   ::MA_SignalCloseMethod, ::MA_SignalCloseLevel, ::MA_PriceStopMethod, ::MA_PriceStopLevel,
-                  ::MA_TickFilterMethod, ::MA_MaxSpread, ::MA_Shift) {}
+                  ::MA_TickFilterMethod, ::MA_MaxSpread, ::MA_Shift, ::MA_OrderCloseTime) {}
 } stg_ma_defaults;
 
 // Struct to define strategy parameters to override.
