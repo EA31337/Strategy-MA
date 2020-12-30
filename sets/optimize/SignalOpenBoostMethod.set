@@ -1,0 +1,7 @@
+; Optimize signal open boost method param.
+MA_SignalOpenBoostMethod,1=1
+MA_SignalOpenBoostMethod,2=1
+MA_SignalOpenBoostMethod,3=8
+MA_SignalOpenBoostMethod,F=1
+MA_SignalOpenFilterMethod=1
+MA_TickFilterMethod=1

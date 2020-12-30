@@ -1,0 +1,8 @@
+; Optimize price stop method param.
+MA_PriceStopMethod,1=0
+MA_PriceStopMethod,2=1
+MA_PriceStopMethod,3=4
+MA_PriceStopMethod,F=1
+MA_OrderCloseTime=-20
+MA_SignalOpenFilterMethod=1
+MA_TickFilterMethod=1

@@ -1,0 +1,7 @@
+; Optimize signal close level param.
+MA_SignalCloseLevel,1=10
+MA_SignalCloseLevel,2=5
+MA_SignalCloseLevel,3=40
+MA_SignalCloseLevel,F=1
+MA_SignalOpenFilterMethod=1
+MA_TickFilterMethod=1

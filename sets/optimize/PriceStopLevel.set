@@ -1,0 +1,7 @@
+; Optimize price stop level param.
+MA_PriceStopLevel,1=10
+MA_PriceStopLevel,2=5
+MA_PriceStopLevel,3=40
+MA_PriceStopLevel,F=1
+MA_SignalOpenFilterMethod=1
+MA_TickFilterMethod=1
