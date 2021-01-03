@@ -1,0 +1,7 @@
+; Optimize strategy indicator's MA applied price param.
+MA_Indi_MA_Applied_Price,1=0
+MA_Indi_MA_Applied_Price,2=0
+MA_Indi_MA_Applied_Price,3=6
+MA_Indi_MA_Applied_Price,F=1
+MA_SignalOpenFilterMethod=1
+MA_TickFilterMethod=1
