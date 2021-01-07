@@ -18,17 +18,17 @@ INPUT float MA_MaxSpread = 4.0;           // Max spread to trade (pips)
 INPUT int MA_Shift = 0;                   // Shift
 INPUT int MA_OrderCloseTime = -20;        // Order close time in mins (>0) or bars (<0)
 INPUT string __MA_Indi_MA_Parameters__ = "-- MA strategy: MA indicator params --";  // >>> MA strategy: MA indicator <<<
-INPUT int Indi_MA_Period = 12;                                                      // Period
-INPUT int Indi_MA_MA_Shift = 0;                                                     // MA Shift
-INPUT ENUM_MA_METHOD Indi_MA_Method = 1;                                            // MA Method
-INPUT ENUM_APPLIED_PRICE Indi_MA_Applied_Price = 6;                                 // Applied Price
+INPUT int MA_Indi_MA_Period = 12;                                                   // Period
+INPUT int MA_Indi_MA_Shift = 0;                                                     // MA Shift
+INPUT ENUM_MA_METHOD MA_Indi_MA_Method = 1;                                         // MA Method
+INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = 6;                              // Applied Price
 
 // Structs.
 
 // Defines struct with default user indicator values.
 struct Indi_MA_Params_Defaults : MAParams {
   Indi_MA_Params_Defaults()
-      : MAParams(::Indi_MA_Period, ::Indi_MA_MA_Shift, ::Indi_MA_Method, ::Indi_MA_Applied_Price) {}
+      : MAParams(::MA_Indi_MA_Period, ::MA_Indi_MA_Shift, ::MA_Indi_MA_Method, ::MA_Indi_MA_Applied_Price) {}
 } indi_ma_defaults;
 
 // Defines struct to store indicator parameter values.
