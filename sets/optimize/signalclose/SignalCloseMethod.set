@@ -1,0 +1,7 @@
+; Optimize signal close method param.
+MA_SignalCloseMethod,1=-4
+MA_SignalCloseMethod,2=1
+MA_SignalCloseMethod,3=4
+MA_SignalCloseMethod,F=1
+MA_SignalOpenFilterMethod=1
+MA_TickFilterMethod=1

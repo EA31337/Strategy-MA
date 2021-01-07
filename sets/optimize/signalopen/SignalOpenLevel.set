@@ -1,0 +1,7 @@
+; Optimize signal open level param.
+MA_SignalOpenFilterMethod=1
+MA_SignalOpenLevel,1=0
+MA_SignalOpenLevel,2=1
+MA_SignalOpenLevel,3=10
+MA_SignalOpenLevel,F=1
+MA_TickFilterMethod=1

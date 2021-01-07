@@ -1,0 +1,6 @@
+; Optimize tick filter method param.
+MA_SignalOpenFilterMethod=1
+MA_TickFilterMethod,1=1
+MA_TickFilterMethod,2=1
+MA_TickFilterMethod,3=32
+MA_TickFilterMethod,F=1

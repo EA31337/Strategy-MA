@@ -1,0 +1,7 @@
+; Optimize strategy indicator's MA period param.
+MA_Indi_MA_Period,1=4
+MA_Indi_MA_Period,2=4
+MA_Indi_MA_Period,3=24
+MA_Indi_MA_Period,F=1
+MA_SignalOpenFilterMethod=1
+MA_TickFilterMethod=1

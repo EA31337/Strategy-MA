@@ -1,0 +1,7 @@
+; Optimize max spread param.
+MA_MaxSpread,1=10
+MA_MaxSpread,2=10
+MA_MaxSpread,3=40
+MA_MaxSpread,F=1
+MA_SignalOpenFilterMethod=1
+MA_TickFilterMethod=1
