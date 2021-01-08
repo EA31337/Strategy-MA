@@ -25,7 +25,7 @@ struct Stg_MA_Params_{{ Timeframe }} : StgParams {
     signal_close_method = {{ MA_SignalCloseMethod | default(0) }};
     signal_close_level = (float){{ MA_SignalCloseLevel | default(0) }};
     price_stop_method = {{ MA_PriceStopMethod | default(0) }};
-    price_stop_level = {{ MA_SignalCloseLevel | default(1) }};
+    price_stop_level = (float){{ MA_SignalCloseLevel | default(1) }};
     tick_filter_method = {{ MA_TickFilterMethod  | default(1) }};
     max_spread = {{ MA_MaxSpread | default(0) }};
   }
