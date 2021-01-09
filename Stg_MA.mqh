@@ -19,16 +19,18 @@ INPUT int MA_Shift = 0;                   // Shift
 INPUT int MA_OrderCloseTime = -20;        // Order close time in mins (>0) or bars (<0)
 INPUT string __MA_Indi_MA_Parameters__ = "-- MA strategy: MA indicator params --";  // >>> MA strategy: MA indicator <<<
 INPUT int MA_Indi_MA_Period = 12;                                                   // Period
-INPUT int MA_Indi_MA_Shift = 0;                                                     // MA Shift
+INPUT int MA_Indi_MA_MA_Shift = 0;                                                  // MA Shift
 INPUT ENUM_MA_METHOD MA_Indi_MA_Method = 1;                                         // MA Method
 INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = 6;                              // Applied Price
+INPUT int MA_Indi_MA_Shift = 0;                                                     // Shift
 
 // Structs.
 
 // Defines struct with default user indicator values.
 struct Indi_MA_Params_Defaults : MAParams {
   Indi_MA_Params_Defaults()
-      : MAParams(::MA_Indi_MA_Period, ::MA_Indi_MA_Shift, ::MA_Indi_MA_Method, ::MA_Indi_MA_Applied_Price) {}
+      : MAParams(::MA_Indi_MA_Period, ::MA_Indi_MA_MA_Shift, ::MA_Indi_MA_Method, ::MA_Indi_MA_Applied_Price,
+                 ::MA_Indi_MA_Shift) {}
 } indi_ma_defaults;
 
 // Defines struct with default user strategy values.
@@ -71,7 +73,7 @@ class Stg_MA : public Strategy {
     StgParams _stg_params(stg_ma_defaults);
     if (!Terminal::IsOptimization()) {
       SetParamsByTf<MAParams>(_indi_params, _tf, indi_ma_m1, indi_ma_m5, indi_ma_m15, indi_ma_m30, indi_ma_h1,
-                                    indi_ma_h4, indi_ma_h8);
+                              indi_ma_h4, indi_ma_h8);
       SetParamsByTf<StgParams>(_stg_params, _tf, stg_ma_m1, stg_ma_m5, stg_ma_m15, stg_ma_m30, stg_ma_h1, stg_ma_h4,
                                stg_ma_h8);
     }
