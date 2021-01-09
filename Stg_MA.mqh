@@ -5,11 +5,11 @@
 
 // User params.
 INPUT float MA_LotSize = 0;               // Lot size
-INPUT int MA_SignalOpenMethod = 0;        // Signal open method (-127-127)
+INPUT int MA_SignalOpenMethod = 0;        // Signal open method (-3-3)
 INPUT float MA_SignalOpenLevel = 0.0f;    // Signal open level
 INPUT int MA_SignalOpenFilterMethod = 1;  // Signal open filter method
 INPUT int MA_SignalOpenBoostMethod = 0;   // Signal open boost method
-INPUT int MA_SignalCloseMethod = 48;      // Signal close method (-127-127)
+INPUT int MA_SignalCloseMethod = 0;       // Signal close method (-3-3)
 INPUT float MA_SignalCloseLevel = 0.0f;   // Signal close level
 INPUT int MA_PriceStopMethod = 0;         // Price stop method
 INPUT float MA_PriceStopLevel = 0;        // Price stop level
@@ -95,31 +95,22 @@ class Stg_MA : public Strategy {
     Indi_MA *_indi = Data();
     bool _is_valid = _indi[CURR].IsValid() && _indi[PREV].IsValid() && _indi[PPREV].IsValid();
     bool _result = _is_valid;
-    double _level_pips = _level * Chart().GetPipSize();
     if (_is_valid) {
       switch (_cmd) {
         case ORDER_TYPE_BUY:
-          _result = _indi[CURR][0] > _indi[PREV][0];
+          _result &= _indi.IsIncreasing(3);
+          _result &= _indi.IsIncByPct(_level, 0, 0, 2);
           if (_method != 0) {
-            if (METHOD(_method, 0)) _result &= _indi[PREV][0] < _indi[PPREV][0];  // ... 2 consecutive columns are red.
-            if (METHOD(_method, 1)) _result &= _indi[PPREV][0] < _indi[3][0];     // ... 3 consecutive columns are red.
-            if (METHOD(_method, 2)) _result &= _indi[3][0] < _indi[4][0];         // ... 4 consecutive columns are red.
-            if (METHOD(_method, 3))
-              _result &= _indi[PREV][0] > _indi[PPREV][0];                     // ... 2 consecutive columns are green.
-            if (METHOD(_method, 4)) _result &= _indi[PPREV][0] > _indi[3][0];  // ... 3 consecutive columns are green.
-            if (METHOD(_method, 5)) _result &= _indi[3][0] < _indi[4][0];      // ... 4 consecutive columns are green.
+            if (METHOD(_method, 0)) _result &= _indi.IsIncreasing(2, 0, 3);
+            if (METHOD(_method, 1)) _result &= _indi.IsDecreasing(2, 0, 5);
           }
           break;
         case ORDER_TYPE_SELL:
-          _result = _indi[CURR][0] < _indi[PREV][0];
+          _result &= _indi.IsDecreasing(3);
+          _result &= _indi.IsDecByPct(_level, 0, 0, 2);
           if (_method != 0) {
-            if (METHOD(_method, 0)) _result &= _indi[PREV][0] < _indi[PPREV][0];  // ... 2 consecutive columns are red.
-            if (METHOD(_method, 1)) _result &= _indi[PPREV][0] < _indi[3][0];     // ... 3 consecutive columns are red.
-            if (METHOD(_method, 2)) _result &= _indi[3][0] < _indi[4][0];         // ... 4 consecutive columns are red.
-            if (METHOD(_method, 3))
-              _result &= _indi[PREV][0] > _indi[PPREV][0];                     // ... 2 consecutive columns are green.
-            if (METHOD(_method, 4)) _result &= _indi[PPREV][0] > _indi[3][0];  // ... 3 consecutive columns are green.
-            if (METHOD(_method, 5)) _result &= _indi[3][0] < _indi[4][0];      // ... 4 consecutive columns are green.
+            if (METHOD(_method, 0)) _result &= _indi.IsIncreasing(2, 0, 3);
+            if (METHOD(_method, 1)) _result &= _indi.IsDecreasing(2, 0, 5);
           }
           break;
       }
