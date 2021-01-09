@@ -31,12 +31,6 @@ struct Indi_MA_Params_Defaults : MAParams {
       : MAParams(::MA_Indi_MA_Period, ::MA_Indi_MA_Shift, ::MA_Indi_MA_Method, ::MA_Indi_MA_Applied_Price) {}
 } indi_ma_defaults;
 
-// Defines struct to store indicator parameter values.
-struct Indi_MA_Params : public MAParams {
-  // Struct constructors.
-  void Indi_MA_Params(MAParams &_params, ENUM_TIMEFRAMES _tf) : MAParams(_params, _tf) {}
-};
-
 // Defines struct with default user strategy values.
 struct Stg_MA_Params_Defaults : StgParams {
   Stg_MA_Params_Defaults()
@@ -47,11 +41,11 @@ struct Stg_MA_Params_Defaults : StgParams {
 
 // Struct to define strategy parameters to override.
 struct Stg_MA_Params : StgParams {
-  Indi_MA_Params iparams;
+  MAParams iparams;
   StgParams sparams;
 
   // Struct constructors.
-  Stg_MA_Params(Indi_MA_Params &_iparams, StgParams &_sparams)
+  Stg_MA_Params(MAParams &_iparams, StgParams &_sparams)
       : iparams(indi_ma_defaults, _iparams.tf), sparams(stg_ma_defaults) {
     iparams = _iparams;
     sparams = _sparams;
@@ -73,10 +67,10 @@ class Stg_MA : public Strategy {
 
   static Stg_MA *Init(ENUM_TIMEFRAMES _tf = NULL, long _magic_no = NULL, ENUM_LOG_LEVEL _log_level = V_INFO) {
     // Initialize strategy initial values.
-    Indi_MA_Params _indi_params(indi_ma_defaults, _tf);
+    MAParams _indi_params(indi_ma_defaults, _tf);
     StgParams _stg_params(stg_ma_defaults);
     if (!Terminal::IsOptimization()) {
-      SetParamsByTf<Indi_MA_Params>(_indi_params, _tf, indi_ma_m1, indi_ma_m5, indi_ma_m15, indi_ma_m30, indi_ma_h1,
+      SetParamsByTf<MAParams>(_indi_params, _tf, indi_ma_m1, indi_ma_m5, indi_ma_m15, indi_ma_m30, indi_ma_h1,
                                     indi_ma_h4, indi_ma_h8);
       SetParamsByTf<StgParams>(_stg_params, _tf, stg_ma_m1, stg_ma_m5, stg_ma_m15, stg_ma_m30, stg_ma_h1, stg_ma_h4,
                                stg_ma_h8);
