@@ -20,8 +20,8 @@ INPUT int MA_OrderCloseTime = -20;        // Order close time in mins (>0) or ba
 INPUT string __MA_Indi_MA_Parameters__ = "-- MA strategy: MA indicator params --";  // >>> MA strategy: MA indicator <<<
 INPUT int MA_Indi_MA_Period = 12;                                                   // Period
 INPUT int MA_Indi_MA_MA_Shift = 0;                                                  // MA Shift
-INPUT ENUM_MA_METHOD MA_Indi_MA_Method = 1;                                         // MA Method
-INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = 6;                              // Applied Price
+INPUT ENUM_MA_METHOD MA_Indi_MA_Method = (ENUM_MA_METHOD)1;                         // MA Method
+INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = (ENUM_APPLIED_PRICE)6;          // Applied Price
 INPUT int MA_Indi_MA_Shift = 0;                                                     // Shift
 
 // Structs.
