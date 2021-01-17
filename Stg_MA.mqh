@@ -5,11 +5,11 @@
 
 // User params.
 INPUT float MA_LotSize = 0;               // Lot size
-INPUT int MA_SignalOpenMethod = 0;        // Signal open method (-127-127)
+INPUT int MA_SignalOpenMethod = 0;        // Signal open method (-3-3)
 INPUT float MA_SignalOpenLevel = 0.0f;    // Signal open level
 INPUT int MA_SignalOpenFilterMethod = 1;  // Signal open filter method
 INPUT int MA_SignalOpenBoostMethod = 0;   // Signal open boost method
-INPUT int MA_SignalCloseMethod = 48;      // Signal close method (-127-127)
+INPUT int MA_SignalCloseMethod = 0;       // Signal close method (-3-3)
 INPUT float MA_SignalCloseLevel = 0.0f;   // Signal close level
 INPUT int MA_PriceStopMethod = 0;         // Price stop method
 INPUT float MA_PriceStopLevel = 0;        // Price stop level
@@ -19,23 +19,19 @@ INPUT int MA_Shift = 0;                   // Shift
 INPUT int MA_OrderCloseTime = -20;        // Order close time in mins (>0) or bars (<0)
 INPUT string __MA_Indi_MA_Parameters__ = "-- MA strategy: MA indicator params --";  // >>> MA strategy: MA indicator <<<
 INPUT int MA_Indi_MA_Period = 12;                                                   // Period
-INPUT int MA_Indi_MA_Shift = 0;                                                     // MA Shift
-INPUT ENUM_MA_METHOD MA_Indi_MA_Method = 1;                                         // MA Method
-INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = 6;                              // Applied Price
+INPUT int MA_Indi_MA_MA_Shift = 0;                                                  // MA Shift
+INPUT ENUM_MA_METHOD MA_Indi_MA_Method = (ENUM_MA_METHOD)1;                         // MA Method
+INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = (ENUM_APPLIED_PRICE)6;          // Applied Price
+INPUT int MA_Indi_MA_Shift = 0;                                                     // Shift
 
 // Structs.
 
 // Defines struct with default user indicator values.
 struct Indi_MA_Params_Defaults : MAParams {
   Indi_MA_Params_Defaults()
-      : MAParams(::MA_Indi_MA_Period, ::MA_Indi_MA_Shift, ::MA_Indi_MA_Method, ::MA_Indi_MA_Applied_Price) {}
+      : MAParams(::MA_Indi_MA_Period, ::MA_Indi_MA_MA_Shift, ::MA_Indi_MA_Method, ::MA_Indi_MA_Applied_Price,
+                 ::MA_Indi_MA_Shift) {}
 } indi_ma_defaults;
-
-// Defines struct to store indicator parameter values.
-struct Indi_MA_Params : public MAParams {
-  // Struct constructors.
-  void Indi_MA_Params(MAParams &_params, ENUM_TIMEFRAMES _tf) : MAParams(_params, _tf) {}
-};
 
 // Defines struct with default user strategy values.
 struct Stg_MA_Params_Defaults : StgParams {
@@ -47,11 +43,11 @@ struct Stg_MA_Params_Defaults : StgParams {
 
 // Struct to define strategy parameters to override.
 struct Stg_MA_Params : StgParams {
-  Indi_MA_Params iparams;
+  MAParams iparams;
   StgParams sparams;
 
   // Struct constructors.
-  Stg_MA_Params(Indi_MA_Params &_iparams, StgParams &_sparams)
+  Stg_MA_Params(MAParams &_iparams, StgParams &_sparams)
       : iparams(indi_ma_defaults, _iparams.tf), sparams(stg_ma_defaults) {
     iparams = _iparams;
     sparams = _sparams;
@@ -73,11 +69,11 @@ class Stg_MA : public Strategy {
 
   static Stg_MA *Init(ENUM_TIMEFRAMES _tf = NULL, long _magic_no = NULL, ENUM_LOG_LEVEL _log_level = V_INFO) {
     // Initialize strategy initial values.
-    Indi_MA_Params _indi_params(indi_ma_defaults, _tf);
+    MAParams _indi_params(indi_ma_defaults, _tf);
     StgParams _stg_params(stg_ma_defaults);
     if (!Terminal::IsOptimization()) {
-      SetParamsByTf<Indi_MA_Params>(_indi_params, _tf, indi_ma_m1, indi_ma_m5, indi_ma_m15, indi_ma_m30, indi_ma_h1,
-                                    indi_ma_h4, indi_ma_h8);
+      SetParamsByTf<MAParams>(_indi_params, _tf, indi_ma_m1, indi_ma_m5, indi_ma_m15, indi_ma_m30, indi_ma_h1,
+                              indi_ma_h4, indi_ma_h8);
       SetParamsByTf<StgParams>(_stg_params, _tf, stg_ma_m1, stg_ma_m5, stg_ma_m15, stg_ma_m30, stg_ma_h1, stg_ma_h4,
                                stg_ma_h8);
     }
@@ -101,31 +97,22 @@ class Stg_MA : public Strategy {
     Indi_MA *_indi = Data();
     bool _is_valid = _indi[CURR].IsValid() && _indi[PREV].IsValid() && _indi[PPREV].IsValid();
     bool _result = _is_valid;
-    double _level_pips = _level * Chart().GetPipSize();
     if (_is_valid) {
       switch (_cmd) {
         case ORDER_TYPE_BUY:
-          _result = _indi[CURR][0] > _indi[PREV][0];
+          _result &= _indi.IsIncreasing(3);
+          _result &= _indi.IsIncByPct(_level, 0, 0, 2);
           if (_method != 0) {
-            if (METHOD(_method, 0)) _result &= _indi[PREV][0] < _indi[PPREV][0];  // ... 2 consecutive columns are red.
-            if (METHOD(_method, 1)) _result &= _indi[PPREV][0] < _indi[3][0];     // ... 3 consecutive columns are red.
-            if (METHOD(_method, 2)) _result &= _indi[3][0] < _indi[4][0];         // ... 4 consecutive columns are red.
-            if (METHOD(_method, 3))
-              _result &= _indi[PREV][0] > _indi[PPREV][0];                     // ... 2 consecutive columns are green.
-            if (METHOD(_method, 4)) _result &= _indi[PPREV][0] > _indi[3][0];  // ... 3 consecutive columns are green.
-            if (METHOD(_method, 5)) _result &= _indi[3][0] < _indi[4][0];      // ... 4 consecutive columns are green.
+            if (METHOD(_method, 0)) _result &= _indi.IsIncreasing(2, 0, 3);
+            if (METHOD(_method, 1)) _result &= _indi.IsDecreasing(2, 0, 5);
           }
           break;
         case ORDER_TYPE_SELL:
-          _result = _indi[CURR][0] < _indi[PREV][0];
+          _result &= _indi.IsDecreasing(3);
+          _result &= _indi.IsDecByPct(_level, 0, 0, 2);
           if (_method != 0) {
-            if (METHOD(_method, 0)) _result &= _indi[PREV][0] < _indi[PPREV][0];  // ... 2 consecutive columns are red.
-            if (METHOD(_method, 1)) _result &= _indi[PPREV][0] < _indi[3][0];     // ... 3 consecutive columns are red.
-            if (METHOD(_method, 2)) _result &= _indi[3][0] < _indi[4][0];         // ... 4 consecutive columns are red.
-            if (METHOD(_method, 3))
-              _result &= _indi[PREV][0] > _indi[PPREV][0];                     // ... 2 consecutive columns are green.
-            if (METHOD(_method, 4)) _result &= _indi[PPREV][0] > _indi[3][0];  // ... 3 consecutive columns are green.
-            if (METHOD(_method, 5)) _result &= _indi[3][0] < _indi[4][0];      // ... 4 consecutive columns are green.
+            if (METHOD(_method, 0)) _result &= _indi.IsIncreasing(2, 0, 3);
+            if (METHOD(_method, 1)) _result &= _indi.IsDecreasing(2, 0, 5);
           }
           break;
       }

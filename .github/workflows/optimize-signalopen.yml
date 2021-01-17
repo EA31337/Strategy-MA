@@ -81,14 +81,13 @@ jobs:
         tf: [M1, M5, M15, M30]
       max-parallel: 4
     steps:
-      - run: echo ${{ matrix.setfile }}
       - uses: actions/download-artifact@v2
         with:
           path: .
       - name: Generate env file
         run: >-
           grep -w = config/${{ matrix.pair }}_${{ matrix.tf }}.h
-          | sed -e 's/[; ]*//g;s/([^)]*)//g' | tee sets/.env
+          | sed -e 's/[}; ]*//g;s/([^)]*)//g;s/^.*{//g' | tee sets/.env
       - name: Generate SET file from the template file
         uses: cuchi/jinja2-action@v1.2.0
         with:

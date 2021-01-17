@@ -7,9 +7,9 @@
 struct Indi_MA_Params_{{ Timeframe }} : Indi_MA_Params {
   Indi_MA_Params_{{ Timeframe }}() : Indi_MA_Params(indi_ma_defaults, PERIOD_{{ Timeframe }}) {
     applied_price = (ENUM_APPLIED_PRICE){{ MA_Indi_MA_Applied_Price | default(0) }};
-    ma_method = {{ MA_Indi_MA_Method | default(0) }};
+    ma_method = (ENUM_MA_METHOD){{ MA_Indi_MA_Method | default(0) }};
     period = {{ MA_Indi_MA_Period | default(0) }};
-    shift = {{ MA_Shift | default(0) }};
+    shift = {{ MA_Indi_MA_Shift | default(0) }};
   }
 } indi_ma_{{ Timeframe | lower }};
 
@@ -25,7 +25,7 @@ struct Stg_MA_Params_{{ Timeframe }} : StgParams {
     signal_close_method = {{ MA_SignalCloseMethod | default(0) }};
     signal_close_level = (float){{ MA_SignalCloseLevel | default(0) }};
     price_stop_method = {{ MA_PriceStopMethod | default(0) }};
-    price_stop_level = {{ MA_SignalCloseLevel | default(1) }};
+    price_stop_level = (float){{ MA_SignalCloseLevel | default(1) }};
     tick_filter_method = {{ MA_TickFilterMethod  | default(1) }};
     max_spread = {{ MA_MaxSpread | default(0) }};
   }
