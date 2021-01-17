@@ -9,7 +9,7 @@ struct Indi_MA_Params_{{ Timeframe }} : Indi_MA_Params {
     applied_price = (ENUM_APPLIED_PRICE){{ MA_Indi_MA_Applied_Price | default(0) }};
     ma_method = (ENUM_MA_METHOD){{ MA_Indi_MA_Method | default(0) }};
     period = {{ MA_Indi_MA_Period | default(0) }};
-    shift = {{ MA_Shift | default(0) }};
+    shift = {{ MA_Indi_MA_Shift | default(0) }};
   }
 } indi_ma_{{ Timeframe | lower }};
 
