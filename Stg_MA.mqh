@@ -38,7 +38,7 @@ struct Stg_MA_Params_Defaults : StgParams {
   Stg_MA_Params_Defaults()
       : StgParams(::MA_SignalOpenMethod, ::MA_SignalOpenFilterMethod, ::MA_SignalOpenLevel, ::MA_SignalOpenBoostMethod,
                   ::MA_SignalCloseMethod, ::MA_SignalCloseLevel, ::MA_PriceStopMethod, ::MA_PriceStopLevel,
-                  ::MA_TickFilterMethod, ::MA_MaxSpread, ::MA_Shift, ::MA_OrderCloseTime) {}
+                  ::MA_TickFilterMethod, ::MA_MaxSpread, ::MA_Indi_MA_Shift, ::MA_OrderCloseTime) {}
 } stg_ma_defaults;
 
 // Struct to define strategy parameters to override.
