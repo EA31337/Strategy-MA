@@ -95,24 +95,24 @@ class Stg_MA : public Strategy {
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0f, int _shift = 0) {
     Indi_MA *_indi = Data();
-    bool _is_valid = _indi[CURR].IsValid() && _indi[PREV].IsValid() && _indi[PPREV].IsValid();
+    bool _is_valid = _indi[_shift].IsValid() && _indi[_shift + 1].IsValid() && _indi[_shift + 2].IsValid();
     bool _result = _is_valid;
     if (_is_valid) {
       switch (_cmd) {
         case ORDER_TYPE_BUY:
-          _result &= _indi.IsIncreasing(3);
-          _result &= _indi.IsIncByPct(_level, 0, 0, 2);
+          _result &= _indi.IsIncreasing(3, 0, _shift);
+          _result &= _indi.IsIncByPct(_level, 0, 0, _shift + 3);
           if (_method != 0) {
-            if (METHOD(_method, 0)) _result &= _indi.IsIncreasing(2, 0, 3);
-            if (METHOD(_method, 1)) _result &= _indi.IsDecreasing(2, 0, 5);
+            if (METHOD(_method, 0)) _result &= _indi.IsIncreasing(2, 0, _shift + 3);
+            if (METHOD(_method, 1)) _result &= _indi.IsDecreasing(2, 0, _shift + 5);
           }
           break;
         case ORDER_TYPE_SELL:
-          _result &= _indi.IsDecreasing(3);
-          _result &= _indi.IsDecByPct(_level, 0, 0, 2);
+          _result &= _indi.IsDecreasing(3, 0, _shift);
+          _result &= _indi.IsDecByPct(-_level, 0, 0, _shift + 3);
           if (_method != 0) {
-            if (METHOD(_method, 0)) _result &= _indi.IsIncreasing(2, 0, 3);
-            if (METHOD(_method, 1)) _result &= _indi.IsDecreasing(2, 0, 5);
+            if (METHOD(_method, 0)) _result &= _indi.IsIncreasing(2, 0, _shift + 3);
+            if (METHOD(_method, 1)) _result &= _indi.IsDecreasing(2, 0, _shift + 5);
           }
           break;
       }
