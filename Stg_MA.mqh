@@ -4,19 +4,20 @@
  */
 
 // User params.
-INPUT float MA_LotSize = 0;               // Lot size
-INPUT int MA_SignalOpenMethod = 0;        // Signal open method (-3-3)
-INPUT float MA_SignalOpenLevel = 0.0f;    // Signal open level
-INPUT int MA_SignalOpenFilterMethod = 1;  // Signal open filter method
-INPUT int MA_SignalOpenBoostMethod = 0;   // Signal open boost method
-INPUT int MA_SignalCloseMethod = 0;       // Signal close method (-3-3)
-INPUT float MA_SignalCloseLevel = 0.0f;   // Signal close level
-INPUT int MA_PriceStopMethod = 0;         // Price stop method
-INPUT float MA_PriceStopLevel = 0;        // Price stop level
-INPUT int MA_TickFilterMethod = 1;        // Tick filter method
-INPUT float MA_MaxSpread = 4.0;           // Max spread to trade (pips)
-INPUT int MA_Shift = 0;                   // Shift
-INPUT int MA_OrderCloseTime = -20;        // Order close time in mins (>0) or bars (<0)
+INPUT string __MA_Parameters__ = "-- MA strategy params --";  // >>> MA <<<
+INPUT float MA_LotSize = 0;                                   // Lot size
+INPUT int MA_SignalOpenMethod = 0;                            // Signal open method (-3-3)
+INPUT float MA_SignalOpenLevel = 0.0f;                        // Signal open level
+INPUT int MA_SignalOpenFilterMethod = 1;                      // Signal open filter method
+INPUT int MA_SignalOpenBoostMethod = 0;                       // Signal open boost method
+INPUT int MA_SignalCloseMethod = 0;                           // Signal close method (-3-3)
+INPUT float MA_SignalCloseLevel = 0.0f;                       // Signal close level
+INPUT int MA_PriceStopMethod = 0;                             // Price stop method
+INPUT float MA_PriceStopLevel = 0;                            // Price stop level
+INPUT int MA_TickFilterMethod = 1;                            // Tick filter method
+INPUT float MA_MaxSpread = 4.0;                               // Max spread to trade (pips)
+INPUT int MA_Shift = 0;                                       // Shift
+INPUT int MA_OrderCloseTime = -20;                            // Order close time in mins (>0) or bars (<0)
 INPUT string __MA_Indi_MA_Parameters__ = "-- MA strategy: MA indicator params --";  // >>> MA strategy: MA indicator <<<
 INPUT int MA_Indi_MA_Period = 12;                                                   // Period
 INPUT int MA_Indi_MA_MA_Shift = 0;                                                  // MA Shift
