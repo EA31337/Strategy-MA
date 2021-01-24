@@ -87,7 +87,6 @@ class Stg_MA : public Strategy {
     _stg_params.SetTf(_tf, _Symbol);
     // Initialize strategy instance.
     Strategy *_strat = new Stg_MA(_stg_params, "MA");
-    _stg_params.SetStops(_strat, _strat);
     return _strat;
   }
 
