@@ -72,12 +72,12 @@ class Stg_MA : public Strategy {
     // Initialize strategy initial values.
     MAParams _indi_params(indi_ma_defaults, _tf);
     StgParams _stg_params(stg_ma_defaults);
-    if (!Terminal::IsOptimization()) {
-      SetParamsByTf<MAParams>(_indi_params, _tf, indi_ma_m1, indi_ma_m5, indi_ma_m15, indi_ma_m30, indi_ma_h1,
-                              indi_ma_h4, indi_ma_h8);
-      SetParamsByTf<StgParams>(_stg_params, _tf, stg_ma_m1, stg_ma_m5, stg_ma_m15, stg_ma_m30, stg_ma_h1, stg_ma_h4,
-                               stg_ma_h8);
-    }
+#ifdef __config__
+    SetParamsByTf<MAParams>(_indi_params, _tf, indi_ma_m1, indi_ma_m5, indi_ma_m15, indi_ma_m30, indi_ma_h1, indi_ma_h4,
+                            indi_ma_h8);
+    SetParamsByTf<StgParams>(_stg_params, _tf, stg_ma_m1, stg_ma_m5, stg_ma_m15, stg_ma_m30, stg_ma_h1, stg_ma_h4,
+                             stg_ma_h8);
+#endif
     // Initialize indicator.
     MAParams ma_params(_indi_params);
     _stg_params.SetIndicator(new Indi_MA(_indi_params));
