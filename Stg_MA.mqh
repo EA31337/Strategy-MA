@@ -94,7 +94,7 @@ class Stg_MA : public Strategy {
    * Check strategy's opening signal.
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0f, int _shift = 0) {
-    Indi_MA *_indi = Data();
+    Indi_MA *_indi = GetIndicator();
     bool _is_valid = _indi[_shift].IsValid() && _indi[_shift + 1].IsValid() && _indi[_shift + 2].IsValid();
     bool _result = _is_valid;
     if (_is_valid) {
@@ -124,7 +124,7 @@ class Stg_MA : public Strategy {
    * Gets price stop value for profit take or stop loss.
    */
   float PriceStop(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, float _level = 0.0) {
-    Indi_MA *_indi = Data();
+    Indi_MA *_indi = GetIndicator();
     double _trail = _level * Market().GetPipSize();
     int _direction = Order::OrderDirection(_cmd, _mode);
     double _default_value = Market().GetCloseOffer(_cmd) + _trail * _method * _direction;
