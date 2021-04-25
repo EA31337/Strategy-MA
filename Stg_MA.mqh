@@ -66,7 +66,8 @@ struct Stg_MA_Params : StgParams {
 
 class Stg_MA : public Strategy {
  public:
-  Stg_MA(StgParams &_params, Trade *_trade = NULL, string _name = "") : Strategy(_params, _trade, _name) {}
+  Stg_MA(StgParams &_sparams, TradeParams &_tparams, ChartParams &_cparams, string _name = "")
+      : Strategy(_sparams, _tparams, _cparams, _name) {}
 
   static Stg_MA *Init(ENUM_TIMEFRAMES _tf = NULL, long _magic_no = NULL, ENUM_LOG_LEVEL _log_level = V_INFO) {
     // Initialize strategy initial values.
@@ -82,8 +83,9 @@ class Stg_MA : public Strategy {
     MAParams ma_params(_indi_params);
     _stg_params.SetIndicator(new Indi_MA(_indi_params));
     // Initialize Strategy instance.
+    ChartParams _cparams(_tf, _Symbol);
     TradeParams _tparams(_magic_no, _log_level);
-    Strategy *_strat = new Stg_MA(_stg_params, new Trade(new Chart(_tf, _Symbol)), "MA");
+    Strategy *_strat = new Stg_MA(_stg_params, _tparams, _cparams, "MA");
     return _strat;
   }
 
