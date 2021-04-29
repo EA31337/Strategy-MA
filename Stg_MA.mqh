@@ -49,7 +49,7 @@ struct Stg_MA_Params : StgParams {
 
   // Struct constructors.
   Stg_MA_Params(MAParams &_iparams, StgParams &_sparams)
-      : iparams(indi_ma_defaults, _iparams.tf), sparams(stg_ma_defaults) {
+      : iparams(indi_ma_defaults, _iparams.tf.GetTf()), sparams(stg_ma_defaults) {
     iparams = _iparams;
     sparams = _sparams;
   }
