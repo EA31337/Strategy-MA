@@ -97,22 +97,17 @@ class Stg_MA : public Strategy {
     bool _is_valid = _indi[_shift].IsValid() && _indi[_shift + 1].IsValid() && _indi[_shift + 2].IsValid();
     bool _result = _is_valid;
     if (_is_valid) {
+      IndicatorSignal _signals = _indi.GetSignals(4, _shift);
       switch (_cmd) {
         case ORDER_TYPE_BUY:
           _result &= _indi.IsIncreasing(3, 0, _shift);
-          _result &= _indi.IsIncByPct(_level, 0, 0, _shift + 3);
-          if (_method != 0) {
-            if (METHOD(_method, 0)) _result &= _indi.IsIncreasing(2, 0, _shift + 3);
-            if (METHOD(_method, 1)) _result &= _indi.IsDecreasing(2, 0, _shift + 5);
-          }
+          _result &= _indi.IsIncByPct(_level, 0, _shift, 3);
+          _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
           break;
         case ORDER_TYPE_SELL:
           _result &= _indi.IsDecreasing(3, 0, _shift);
-          _result &= _indi.IsDecByPct(-_level, 0, 0, _shift + 3);
-          if (_method != 0) {
-            if (METHOD(_method, 0)) _result &= _indi.IsIncreasing(2, 0, _shift + 3);
-            if (METHOD(_method, 1)) _result &= _indi.IsDecreasing(2, 0, _shift + 5);
-          }
+          _result &= _indi.IsDecByPct(-_level, 0, _shift, 3);
+          _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
           break;
       }
     }
