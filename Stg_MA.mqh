@@ -11,6 +11,7 @@ INPUT float MA_SignalOpenLevel = 0.0f;     // Signal open level
 INPUT int MA_SignalOpenFilterMethod = 32;  // Signal open filter method
 INPUT int MA_SignalOpenBoostMethod = 0;    // Signal open boost method
 INPUT int MA_SignalCloseMethod = 2;        // Signal close method (-127-127)
+INPUT int MA_SignalCloseFilter = 0;        // Signal close filter (-127-127)
 INPUT float MA_SignalCloseLevel = 0.0f;    // Signal close level
 INPUT int MA_PriceStopMethod = 1;          // Price stop method
 INPUT float MA_PriceStopLevel = 0;         // Price stop level
@@ -38,8 +39,8 @@ struct Indi_MA_Params_Defaults : MAParams {
 struct Stg_MA_Params_Defaults : StgParams {
   Stg_MA_Params_Defaults()
       : StgParams(::MA_SignalOpenMethod, ::MA_SignalOpenFilterMethod, ::MA_SignalOpenLevel, ::MA_SignalOpenBoostMethod,
-                  ::MA_SignalCloseMethod, ::MA_SignalCloseLevel, ::MA_PriceStopMethod, ::MA_PriceStopLevel,
-                  ::MA_TickFilterMethod, ::MA_MaxSpread, ::MA_Shift, ::MA_OrderCloseTime) {}
+                  ::MA_SignalCloseMethod, ::MA_SignalCloseFilter, ::MA_SignalCloseLevel, ::MA_PriceStopMethod,
+                  ::MA_PriceStopLevel, ::MA_TickFilterMethod, ::MA_MaxSpread, ::MA_Shift, ::MA_OrderCloseTime) {}
 } stg_ma_defaults;
 
 // Struct to define strategy parameters to override.
