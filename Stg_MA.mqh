@@ -18,6 +18,8 @@ INPUT float MA_PriceStopLevel = 0;         // Price stop level
 INPUT int MA_TickFilterMethod = 1;         // Tick filter method
 INPUT float MA_MaxSpread = 4.0;            // Max spread to trade (pips)
 INPUT short MA_Shift = 0;                  // Shift
+INPUT float MA_OrderCloseLoss = 0;         // Order close loss
+INPUT float MA_OrderCloseProfit = 0;       // Order close profit
 INPUT int MA_OrderCloseTime = -20;         // Order close time in mins (>0) or bars (<0)
 INPUT_GROUP("MA strategy: MA indicator params");
 INPUT int MA_Indi_MA_Period = 12;                                           // Period
@@ -40,7 +42,11 @@ struct Stg_MA_Params_Defaults : StgParams {
   Stg_MA_Params_Defaults()
       : StgParams(::MA_SignalOpenMethod, ::MA_SignalOpenFilterMethod, ::MA_SignalOpenLevel, ::MA_SignalOpenBoostMethod,
                   ::MA_SignalCloseMethod, ::MA_SignalCloseFilter, ::MA_SignalCloseLevel, ::MA_PriceStopMethod,
-                  ::MA_PriceStopLevel, ::MA_TickFilterMethod, ::MA_MaxSpread, ::MA_Shift, ::MA_OrderCloseTime) {}
+                  ::MA_PriceStopLevel, ::MA_TickFilterMethod, ::MA_MaxSpread, ::MA_Shift) {
+    Set(STRAT_PARAM_OCL, MA_OrderCloseLoss);
+    Set(STRAT_PARAM_OCP, MA_OrderCloseProfit);
+    Set(STRAT_PARAM_OCT, MA_OrderCloseTime);
+  }
 } stg_ma_defaults;
 
 // Struct to define strategy parameters to override.
