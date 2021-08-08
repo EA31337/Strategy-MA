@@ -8,7 +8,7 @@ INPUT string __MA_Parameters__ = "-- MA strategy params --";  // >>> MA <<<
 INPUT float MA_LotSize = 0;                                   // Lot size
 INPUT int MA_SignalOpenMethod = 2;                            // Signal open method (-127-127)
 INPUT float MA_SignalOpenLevel = 0.0f;                        // Signal open level
-INPUT int MA_SignalOpenFilterMethod = 32;                      // Signal open filter method
+INPUT int MA_SignalOpenFilterMethod = 32;                     // Signal open filter method
 INPUT int MA_SignalOpenBoostMethod = 0;                       // Signal open boost method
 INPUT int MA_SignalCloseMethod = 2;                           // Signal close method (-127-127)
 INPUT float MA_SignalCloseLevel = 0.0f;                       // Signal close level
@@ -94,22 +94,23 @@ class Stg_MA : public Strategy {
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0f, int _shift = 0) {
     Indi_MA *_indi = GetIndicator();
-    bool _is_valid = _indi[_shift].IsValid() && _indi[_shift + 1].IsValid() && _indi[_shift + 2].IsValid();
-    bool _result = _is_valid;
-    if (_is_valid) {
-      IndicatorSignal _signals = _indi.GetSignals(4, _shift);
-      switch (_cmd) {
-        case ORDER_TYPE_BUY:
-          _result &= _indi.IsIncreasing(3, 0, _shift);
-          _result &= _indi.IsIncByPct(_level, 0, _shift, 3);
-          _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
-          break;
-        case ORDER_TYPE_SELL:
-          _result &= _indi.IsDecreasing(3, 0, _shift);
-          _result &= _indi.IsDecByPct(-_level, 0, _shift, 3);
-          _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
-          break;
-      }
+    bool _result = _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID);
+    if (!_result) {
+      // Returns false when indicator data is not valid.
+      return false;
+    }
+    IndicatorSignal _signals = _indi.GetSignals(4, _shift);
+    switch (_cmd) {
+      case ORDER_TYPE_BUY:
+        _result &= _indi.IsIncreasing(3, 0, _shift);
+        _result &= _indi.IsIncByPct(_level, 0, _shift, 3);
+        _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
+        break;
+      case ORDER_TYPE_SELL:
+        _result &= _indi.IsDecreasing(3, 0, _shift);
+        _result &= _indi.IsDecByPct(-_level, 0, _shift, 3);
+        _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
+        break;
     }
     return _result;
   }
