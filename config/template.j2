@@ -19,7 +19,7 @@ struct Stg_MA_Params_{{ Timeframe }} : StgParams {
   Stg_MA_Params_{{ Timeframe }}() : StgParams(stg_ma_defaults) {
     lot_size = {{ MA_LotSize | default(0) }};
     signal_open_method = {{ MA_SignalOpenMethod | default(0) }};
-    signal_open_filter = {{ MA_SignalOpenFilterMethod | default(1) }};
+    signal_open_filter_method = {{ MA_SignalOpenFilterMethod | default(1) }};
     signal_open_level = (float){{ MA_SignalOpenLevel | default(0) }};
     signal_open_boost = {{ MA_SignalOpenBoostMethod | default(0) }};
     signal_close_method = {{ MA_SignalCloseMethod | default(0) }};
