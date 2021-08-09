@@ -9,6 +9,7 @@ INPUT float MA_LotSize = 0;                // Lot size
 INPUT int MA_SignalOpenMethod = 2;         // Signal open method (-127-127)
 INPUT float MA_SignalOpenLevel = 0.0f;     // Signal open level
 INPUT int MA_SignalOpenFilterMethod = 32;  // Signal open filter method
+INPUT int MA_SignalOpenFilterTime = 6;     // Signal open filter time
 INPUT int MA_SignalOpenBoostMethod = 0;    // Signal open boost method
 INPUT int MA_SignalCloseMethod = 2;        // Signal close method (-127-127)
 INPUT int MA_SignalCloseFilter = 0;        // Signal close filter (-127-127)
@@ -46,6 +47,7 @@ struct Stg_MA_Params_Defaults : StgParams {
     Set(STRAT_PARAM_OCL, MA_OrderCloseLoss);
     Set(STRAT_PARAM_OCP, MA_OrderCloseProfit);
     Set(STRAT_PARAM_OCT, MA_OrderCloseTime);
+    Set(STRAT_PARAM_SOFT, MA_SignalOpenFilterTime);
   }
 } stg_ma_defaults;
 
