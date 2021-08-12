@@ -6,15 +6,15 @@
 // User params.
 INPUT_GROUP("MA strategy: strategy params");
 INPUT float MA_LotSize = 0;                // Lot size
-INPUT int MA_SignalOpenMethod = 2;         // Signal open method (-127-127)
-INPUT float MA_SignalOpenLevel = 0.0f;     // Signal open level
+INPUT int MA_SignalOpenMethod = 0;         // Signal open method (-127-127)
+INPUT float MA_SignalOpenLevel = 0.04f;    // Signal open level
 INPUT int MA_SignalOpenFilterMethod = 32;  // Signal open filter method
 INPUT int MA_SignalOpenFilterTime = 6;     // Signal open filter time
 INPUT int MA_SignalOpenBoostMethod = 0;    // Signal open boost method
-INPUT int MA_SignalCloseMethod = 2;        // Signal close method (-127-127)
+INPUT int MA_SignalCloseMethod = 0;        // Signal close method (-127-127)
 INPUT int MA_SignalCloseFilter = 0;        // Signal close filter (-127-127)
-INPUT float MA_SignalCloseLevel = 0.0f;    // Signal close level
-INPUT int MA_PriceStopMethod = 1;          // Price stop method
+INPUT float MA_SignalCloseLevel = 0.04f;   // Signal close level
+INPUT int MA_PriceStopMethod = 1;          // Price stop method (0-127)
 INPUT float MA_PriceStopLevel = 0;         // Price stop level
 INPUT int MA_TickFilterMethod = 1;         // Tick filter method
 INPUT float MA_MaxSpread = 4.0;            // Max spread to trade (pips)
@@ -23,10 +23,10 @@ INPUT float MA_OrderCloseLoss = 0;         // Order close loss
 INPUT float MA_OrderCloseProfit = 0;       // Order close profit
 INPUT int MA_OrderCloseTime = -20;         // Order close time in mins (>0) or bars (<0)
 INPUT_GROUP("MA strategy: MA indicator params");
-INPUT int MA_Indi_MA_Period = 12;                                           // Period
+INPUT int MA_Indi_MA_Period = 40;                                           // Period
 INPUT int MA_Indi_MA_MA_Shift = 0;                                          // MA Shift
-INPUT ENUM_MA_METHOD MA_Indi_MA_Method = (ENUM_MA_METHOD)1;                 // MA Method
-INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = (ENUM_APPLIED_PRICE)6;  // Applied Price
+INPUT ENUM_MA_METHOD MA_Indi_MA_Method = (ENUM_MA_METHOD)3;                 // MA Method
+INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = PRICE_OPEN;             // Applied Price
 INPUT int MA_Indi_MA_Shift = 0;                                             // Shift
 
 // Structs.
@@ -103,7 +103,8 @@ class Stg_MA : public Strategy {
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0f, int _shift = 0) {
     Indi_MA *_indi = GetIndicator();
-    bool _result = _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID);
+    bool _result =
+        _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift) && _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 1);
     if (!_result) {
       // Returns false when indicator data is not valid.
       return false;
@@ -111,12 +112,12 @@ class Stg_MA : public Strategy {
     IndicatorSignal _signals = _indi.GetSignals(4, _shift);
     switch (_cmd) {
       case ORDER_TYPE_BUY:
-        _result &= _indi.IsIncreasing(3, 0, _shift);
+        _result &= _indi.IsIncreasing(2, 0, _shift);
         _result &= _indi.IsIncByPct(_level, 0, _shift, 3);
         _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
         break;
       case ORDER_TYPE_SELL:
-        _result &= _indi.IsDecreasing(3, 0, _shift);
+        _result &= _indi.IsDecreasing(2, 0, _shift);
         _result &= _indi.IsDecByPct(-_level, 0, _shift, 3);
         _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
         break;
