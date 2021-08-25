@@ -21,7 +21,7 @@ INPUT float MA_MaxSpread = 4.0;            // Max spread to trade (pips)
 INPUT short MA_Shift = 0;                  // Shift
 INPUT float MA_OrderCloseLoss = 0;         // Order close loss
 INPUT float MA_OrderCloseProfit = 0;       // Order close profit
-INPUT int MA_OrderCloseTime = -20;         // Order close time in mins (>0) or bars (<0)
+INPUT int MA_OrderCloseTime = -30;         // Order close time in mins (>0) or bars (<0)
 INPUT_GROUP("MA strategy: MA indicator params");
 INPUT int MA_Indi_MA_Period = 40;                                           // Period
 INPUT int MA_Indi_MA_MA_Shift = 0;                                          // MA Shift
