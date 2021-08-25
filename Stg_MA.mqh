@@ -16,18 +16,18 @@ INPUT int MA_SignalCloseFilter = 0;        // Signal close filter (-127-127)
 INPUT float MA_SignalCloseLevel = 0.04f;   // Signal close level
 INPUT int MA_PriceStopMethod = 1;          // Price stop method (0-127)
 INPUT float MA_PriceStopLevel = 0;         // Price stop level
-INPUT int MA_TickFilterMethod = 1;         // Tick filter method
+INPUT int MA_TickFilterMethod = -48;       // Tick filter method
 INPUT float MA_MaxSpread = 4.0;            // Max spread to trade (pips)
 INPUT short MA_Shift = 0;                  // Shift
 INPUT float MA_OrderCloseLoss = 0;         // Order close loss
 INPUT float MA_OrderCloseProfit = 0;       // Order close profit
 INPUT int MA_OrderCloseTime = -30;         // Order close time in mins (>0) or bars (<0)
 INPUT_GROUP("MA strategy: MA indicator params");
-INPUT int MA_Indi_MA_Period = 40;                                           // Period
-INPUT int MA_Indi_MA_MA_Shift = 0;                                          // MA Shift
-INPUT ENUM_MA_METHOD MA_Indi_MA_Method = (ENUM_MA_METHOD)3;                 // MA Method
-INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = PRICE_OPEN;             // Applied Price
-INPUT int MA_Indi_MA_Shift = 0;                                             // Shift
+INPUT int MA_Indi_MA_Period = 40;                                // Period
+INPUT int MA_Indi_MA_MA_Shift = 0;                               // MA Shift
+INPUT ENUM_MA_METHOD MA_Indi_MA_Method = (ENUM_MA_METHOD)3;      // MA Method
+INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = PRICE_OPEN;  // Applied Price
+INPUT int MA_Indi_MA_Shift = 0;                                  // Shift
 
 // Structs.
 
