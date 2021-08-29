@@ -44,6 +44,7 @@ struct Stg_MA_Params_Defaults : StgParams {
       : StgParams(::MA_SignalOpenMethod, ::MA_SignalOpenFilterMethod, ::MA_SignalOpenLevel, ::MA_SignalOpenBoostMethod,
                   ::MA_SignalCloseMethod, ::MA_SignalCloseFilter, ::MA_SignalCloseLevel, ::MA_PriceStopMethod,
                   ::MA_PriceStopLevel, ::MA_TickFilterMethod, ::MA_MaxSpread, ::MA_Shift) {
+    Set(STRAT_PARAM_LS, MA_LotSize);
     Set(STRAT_PARAM_OCL, MA_OrderCloseLoss);
     Set(STRAT_PARAM_OCP, MA_OrderCloseProfit);
     Set(STRAT_PARAM_OCT, MA_OrderCloseTime);
