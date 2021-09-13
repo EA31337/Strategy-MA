@@ -36,7 +36,7 @@ struct Indi_MA_Params_Defaults : MAParams {
   Indi_MA_Params_Defaults()
       : MAParams(::MA_Indi_MA_Period, ::MA_Indi_MA_MA_Shift, ::MA_Indi_MA_Method, ::MA_Indi_MA_Applied_Price,
                  ::MA_Indi_MA_Shift) {}
-} indi_ma_defaults;
+};
 
 // Defines struct with default user strategy values.
 struct Stg_MA_Params_Defaults : StgParams {
@@ -50,7 +50,7 @@ struct Stg_MA_Params_Defaults : StgParams {
     Set(STRAT_PARAM_OCT, MA_OrderCloseTime);
     Set(STRAT_PARAM_SOFT, MA_SignalOpenFilterTime);
   }
-} stg_ma_defaults;
+};
 
 #ifdef __config__
 // Loads pair specific param values.
@@ -70,7 +70,9 @@ class Stg_MA : public Strategy {
 
   static Stg_MA *Init(ENUM_TIMEFRAMES _tf = NULL) {
     // Initialize strategy initial values.
+    Indi_MA_Params_Defaults indi_ma_defaults;
     MAParams _indi_params(indi_ma_defaults, _tf);
+    Stg_MA_Params_Defaults stg_ma_defaults;
     StgParams _stg_params(stg_ma_defaults);
 #ifdef __config__
     SetParamsByTf<MAParams>(_indi_params, _tf, indi_ma_m1, indi_ma_m5, indi_ma_m15, indi_ma_m30, indi_ma_h1, indi_ma_h4,
