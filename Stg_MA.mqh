@@ -81,7 +81,6 @@ class Stg_MA : public Strategy {
                              stg_ma_h8);
 #endif
     // Initialize indicator.
-    MAParams ma_params(_indi_params);
     _stg_params.SetIndicator(new Indi_MA(_indi_params));
     // Initialize Strategy instance.
     ChartParams _cparams(_tf, _Symbol);
