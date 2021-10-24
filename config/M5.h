@@ -4,8 +4,8 @@
  */
 
 // Defines indicator's parameter values for the given pair symbol and timeframe.
-struct Indi_MA_Params_M5 : MAParams {
-  Indi_MA_Params_M5() : MAParams(indi_ma_defaults, PERIOD_M5) {
+struct Indi_MA_Params_M5 : IndiMAParams {
+  Indi_MA_Params_M5() : IndiMAParams(indi_ma_defaults, PERIOD_M5) {
     period = 14;
     ma_shift = 0;
     ma_method = (ENUM_MA_METHOD)0;
