@@ -31,13 +31,6 @@ INPUT int MA_Indi_MA_Shift = 0;                                  // Shift
 
 // Structs.
 
-// Defines struct with default user indicator values.
-struct Indi_MA_Params_Defaults : IndiMAParams {
-  Indi_MA_Params_Defaults()
-      : IndiMAParams(::MA_Indi_MA_Period, ::MA_Indi_MA_MA_Shift, ::MA_Indi_MA_Method, ::MA_Indi_MA_Applied_Price,
-                     ::MA_Indi_MA_Shift) {}
-};
-
 // Defines struct with default user strategy values.
 struct Stg_MA_Params_Defaults : StgParams {
   Stg_MA_Params_Defaults()
@@ -88,8 +81,9 @@ class Stg_MA : public Strategy {
    * Event on strategy's init.
    */
   void OnInit() {
-    Indi_MA_Params_Defaults indi_ma_defaults;
-    IndiMAParams _indi_params(indi_ma_defaults, Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
+    IndiMAParams _indi_params(::MA_Indi_MA_Period, ::MA_Indi_MA_MA_Shift, ::MA_Indi_MA_Method,
+                              ::MA_Indi_MA_Applied_Price, ::MA_Indi_MA_Shift);
+    _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
     SetIndicator(new Indi_MA(_indi_params));
   }
 
