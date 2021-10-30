@@ -70,13 +70,9 @@ class Stg_MA : public Strategy {
 
   static Stg_MA *Init(ENUM_TIMEFRAMES _tf = NULL) {
     // Initialize strategy initial values.
-    Indi_MA_Params_Defaults indi_ma_defaults;
-    IndiMAParams _indi_params(indi_ma_defaults, _tf);
     Stg_MA_Params_Defaults stg_ma_defaults;
     StgParams _stg_params(stg_ma_defaults);
 #ifdef __config__
-    SetParamsByTf<IndiMAParams>(_indi_params, _tf, indi_ma_m1, indi_ma_m5, indi_ma_m15, indi_ma_m30, indi_ma_h1,
-                                indi_ma_h4, indi_ma_h8);
     SetParamsByTf<StgParams>(_stg_params, _tf, stg_ma_m1, stg_ma_m5, stg_ma_m15, stg_ma_m30, stg_ma_h1, stg_ma_h4,
                              stg_ma_h8);
 #endif
@@ -85,8 +81,16 @@ class Stg_MA : public Strategy {
     ChartParams _cparams(_tf, _Symbol);
     TradeParams _tparams;
     Strategy *_strat = new Stg_MA(_stg_params, _tparams, _cparams, "MA");
-    _strat.SetIndicator(new Indi_MA(_indi_params));
     return _strat;
+  }
+
+  /**
+   * Event on strategy's init.
+   */
+  void OnInit() {
+    Indi_MA_Params_Defaults indi_ma_defaults;
+    IndiMAParams _indi_params(indi_ma_defaults, Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
+    SetIndicator(new Indi_MA(_indi_params));
   }
 
   /**
