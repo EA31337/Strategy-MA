@@ -61,7 +61,7 @@ class Stg_MA : public Strategy {
   Stg_MA(StgParams &_sparams, TradeParams &_tparams, ChartParams &_cparams, string _name = "")
       : Strategy(_sparams, _tparams, _cparams, _name) {}
 
-  static Stg_MA *Init(ENUM_TIMEFRAMES _tf = NULL) {
+  static Stg_MA *Init(ENUM_TIMEFRAMES _tf = NULL, EA* _ea = NULL) {
     // Initialize strategy initial values.
     Stg_MA_Params_Defaults stg_ma_defaults;
     StgParams _stg_params(stg_ma_defaults);
