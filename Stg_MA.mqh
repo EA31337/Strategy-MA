@@ -10,6 +10,7 @@ enum ENUM_STG_MA_TYPE {
   STG_MA_TYPE_FRAMA,       // FrAMA: Fractal Adaptive Moving Average
   STG_MA_TYPE_ICHIMOKU,    // Ichimoku
   STG_MA_TYPE_MA,          // MA: Moving Average
+  STG_MA_TYPE_VIDYA,       // VIDYA: Variable Index Dynamic Average
 };
 
 // User params.
@@ -65,6 +66,13 @@ INPUT ENUM_MA_METHOD MA_Indi_MA_Method = MODE_LWMA;                  // MA Metho
 INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = PRICE_WEIGHTED;  // Applied Price
 INPUT int MA_Indi_MA_Shift = 0;                                      // Shift
 INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_MA_SourceType = IDATA_BUILTIN;  // Source type
+INPUT_GROUP("MA strategy: VIDYA indicator params");
+input int MA_Indi_VIDYA_Period = 30;                                    // Period
+input int MA_Indi_VIDYA_MA_Period = 20;                                 // MA Period
+INPUT int MA_Indi_VIDYA_MA_Shift = 1;                                   // MA Shift
+INPUT ENUM_APPLIED_PRICE MA_Indi_VIDYA_Applied_Price = PRICE_WEIGHTED;  // Applied Price
+input int MA_Indi_VIDYA_Shift = 0;                                      // Shift
+INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_VIDYA_SourceType = IDATA_BUILTIN;  // Source type
 
 // Structs.
 
@@ -130,6 +138,15 @@ class Stg_MA : public Strategy {
         _indi_params.SetDataSourceType(::MA_Indi_FrAMA_SourceType);
         _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
         SetIndicator(new Indi_FrAMA(_indi_params), ::MA_Type);
+        break;
+      }
+      case STG_MA_TYPE_VIDYA:  // VIDYA
+      {
+        IndiVIDYAParams _indi_params(::MA_Indi_VIDYA_Period, ::MA_Indi_VIDYA_MA_Period, ::MA_Indi_VIDYA_MA_Shift,
+                                     ::MA_Indi_VIDYA_Applied_Price, ::MA_Indi_VIDYA_Shift);
+        _indi_params.SetDataSourceType(::MA_Indi_VIDYA_SourceType);
+        _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
+        SetIndicator(new Indi_VIDYA(_indi_params), ::MA_Type);
         break;
       }
       case STG_MA_TYPE_ICHIMOKU:  // Ichimoku
