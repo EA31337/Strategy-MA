@@ -22,13 +22,13 @@ INPUT ENUM_STG_MA_TYPE MA_Type = STG_MA_TYPE_MA;  // Indicator MA type
 INPUT_GROUP("MA strategy: strategy params");
 INPUT float MA_LotSize = 0;                // Lot size
 INPUT int MA_SignalOpenMethod = 1;         // Signal open method (-127-127)
-INPUT float MA_SignalOpenLevel = 1.0f;     // Signal open level
+INPUT float MA_SignalOpenLevel = 0.2f;     // Signal open level
 INPUT int MA_SignalOpenFilterMethod = 32;  // Signal open filter method
 INPUT int MA_SignalOpenFilterTime = 3;     // Signal open filter time
 INPUT int MA_SignalOpenBoostMethod = 0;    // Signal open boost method
 INPUT int MA_SignalCloseMethod = 1;        // Signal close method (-127-127)
 INPUT int MA_SignalCloseFilter = 0;        // Signal close filter (-127-127)
-INPUT float MA_SignalCloseLevel = 1.0f;    // Signal close level
+INPUT float MA_SignalCloseLevel = 0.0f;    // Signal close level
 INPUT int MA_PriceStopMethod = 1;          // Price stop method (0-127)
 INPUT float MA_PriceStopLevel = 2;         // Price stop level
 INPUT int MA_TickFilterMethod = 32;        // Tick filter method
