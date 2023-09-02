@@ -6,13 +6,13 @@ on:
   pull_request:
     branches:
       - 'master'
-      - 'dev*'
+      - '*dev*'
     paths-ignore:
       - '*.md'
   push:
     branches:
       - 'master'
-      - 'dev*'
+      - '*dev*'
     paths-ignore:
       - '*.md'
 
@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           path: Include/EA31337-classes
-          ref: v2.013
+          ref: v3.000.1
           repository: EA31337/EA31337-classes
       - name: Compile for MQL4
         uses: fx31337/mql-compile-action@master
@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: EA
-          path: '*.ex?'
+          path: '*.ex[45]'
   Test:
     needs: Compile
     runs-on: ubuntu-latest
