@@ -7,6 +7,7 @@ enum ENUM_STG_MA_TYPE {
   STG_MA_TYPE_0_NONE = 0,  // (None)
   STG_MA_TYPE_AMA,         // AMA: Adaptive Moving Average
   STG_MA_TYPE_DEMA,        // DEMA: Double Exponential Moving Average
+  STG_MA_TYPE_FRAMA,       // FrAMA: Fractal Adaptive Moving Average
   STG_MA_TYPE_MA,          // MA: Moving Average
 };
 
@@ -44,6 +45,12 @@ INPUT int MA_Indi_DEMA_MA_Shift = 6;                                   // MA Shi
 INPUT ENUM_APPLIED_PRICE MA_Indi_DEMA_Applied_Price = PRICE_TYPICAL;   // Applied Price
 INPUT int MA_Indi_DEMA_Shift = 0;                                      // DEMA Shift
 INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_DEMA_SourceType = IDATA_BUILTIN;  // Source type
+INPUT_GROUP("MA strategy: FrAMA indicator params");
+input int MA_Indi_FrAMA_Period = 10;                                    // Period
+INPUT ENUM_APPLIED_PRICE MA_Indi_FrAMA_Applied_Price = PRICE_MEDIAN;    // Applied Price
+INPUT int MA_Indi_FrAMA_MA_Shift = 0;                                   // MA Shift
+input int MA_Indi_FrAMA_Shift = 0;                                      // Shift
+INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_FrAMA_SourceType = IDATA_BUILTIN;  // Source type
 INPUT_GROUP("MA strategy: MA indicator params");
 INPUT int MA_Indi_MA_Period = 26;                                    // Period
 INPUT int MA_Indi_MA_MA_Shift = 0;                                   // MA Shift
@@ -107,6 +114,15 @@ class Stg_MA : public Strategy {
         _indi_params.SetDataSourceType(::MA_Indi_DEMA_SourceType);
         _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
         SetIndicator(new Indi_DEMA(_indi_params), ::MA_Type);
+        break;
+      }
+      case STG_MA_TYPE_FRAMA:  // FrAMA
+      {
+        IndiFrAIndiMAParams _indi_params(::MA_Indi_FrAMA_Period, ::MA_Indi_FrAMA_MA_Shift,
+                                         ::MA_Indi_FrAMA_Applied_Price, ::MA_Indi_FrAMA_Shift);
+        _indi_params.SetDataSourceType(::MA_Indi_FrAMA_SourceType);
+        _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
+        SetIndicator(new Indi_FrAMA(_indi_params), ::MA_Type);
         break;
       }
       case STG_MA_TYPE_MA:  // MA

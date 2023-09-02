@@ -10,6 +10,7 @@
 #include <EA31337-classes/EA.mqh>
 #include <EA31337-classes/Indicators/Indi_AMA.mqh>
 #include <EA31337-classes/Indicators/Indi_DEMA.mqh>
+#include <EA31337-classes/Indicators/Indi_FractalAdaptiveMA.mqh>
 #include <EA31337-classes/Indicators/Indi_MA.mqh>
 #include <EA31337-classes/Strategy.mqh>
 
