@@ -4,13 +4,14 @@
  */
 
 enum ENUM_STG_MA_TYPE {
-  STG_MA_TYPE_0_NONE = 0,  // (None)
-  STG_MA_TYPE_AMA,         // AMA: Adaptive Moving Average
-  STG_MA_TYPE_DEMA,        // DEMA: Double Exponential Moving Average
-  STG_MA_TYPE_FRAMA,       // FrAMA: Fractal Adaptive Moving Average
-  STG_MA_TYPE_ICHIMOKU,    // Ichimoku
-  STG_MA_TYPE_MA,          // MA: Moving Average
-  STG_MA_TYPE_VIDYA,       // VIDYA: Variable Index Dynamic Average
+  STG_MA_TYPE_0_NONE = 0,     // (None)
+  STG_MA_TYPE_AMA,            // AMA: Adaptive Moving Average
+  STG_MA_TYPE_DEMA,           // DEMA: Double Exponential Moving Average
+  STG_MA_TYPE_FRAMA,          // FrAMA: Fractal Adaptive Moving Average
+  STG_MA_TYPE_ICHIMOKU,       // Ichimoku
+  STG_MA_TYPE_MA,             // MA: Moving Average
+  STG_MA_TYPE_PRICE_CHANNEL,  // Price Channel
+  STG_MA_TYPE_VIDYA,          // VIDYA: Variable Index Dynamic Average
 };
 
 // User params.
@@ -55,10 +56,11 @@ input int MA_Indi_FrAMA_Shift = 0;                                      // Shift
 INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_FrAMA_SourceType = IDATA_BUILTIN;  // Source type
 INPUT_GROUP("MA strategy: Ichimoku indicator params");
 // INPUT ENUM_ICHIMOKU_LINE MA_Indi_Ichimoku_MA_Line = LINE_TENKANSEN; // Ichimoku line for MA
-INPUT int MA_Indi_Ichimoku_Period_Tenkan_Sen = 30;     // Period Tenkan Sen
-INPUT int MA_Indi_Ichimoku_Period_Kijun_Sen = 10;      // Period Kijun Sen
-INPUT int MA_Indi_Ichimoku_Period_Senkou_Span_B = 30;  // Period Senkou Span B
-INPUT int MA_Indi_Ichimoku_Shift = 1;                  // Shift
+INPUT int MA_Indi_Ichimoku_Period_Tenkan_Sen = 30;                         // Period Tenkan Sen
+INPUT int MA_Indi_Ichimoku_Period_Kijun_Sen = 10;                          // Period Kijun Sen
+INPUT int MA_Indi_Ichimoku_Period_Senkou_Span_B = 30;                      // Period Senkou Span B
+INPUT int MA_Indi_Ichimoku_Shift = 1;                                      // Shift
+INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_Ichimoku_SourceType = IDATA_BUILTIN;  // Source type
 INPUT_GROUP("MA strategy: MA indicator params");
 INPUT int MA_Indi_MA_Period = 26;                                    // Period
 INPUT int MA_Indi_MA_MA_Shift = 0;                                   // MA Shift
@@ -66,6 +68,10 @@ INPUT ENUM_MA_METHOD MA_Indi_MA_Method = MODE_LWMA;                  // MA Metho
 INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = PRICE_WEIGHTED;  // Applied Price
 INPUT int MA_Indi_MA_Shift = 0;                                      // Shift
 INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_MA_SourceType = IDATA_BUILTIN;  // Source type
+INPUT_GROUP("MA strategy: Price Channel indicator params");
+INPUT int MA_Indi_PriceChannel_Period = 26;                                    // Period
+INPUT int MA_Indi_PriceChannel_Shift = 0;                                      // Shift
+INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_PriceChannel_SourceType = IDATA_ICUSTOM;  // Source type
 INPUT_GROUP("MA strategy: VIDYA indicator params");
 input int MA_Indi_VIDYA_Period = 30;                                    // Period
 input int MA_Indi_VIDYA_MA_Period = 20;                                 // MA Period
@@ -140,20 +146,11 @@ class Stg_MA : public Strategy {
         SetIndicator(new Indi_FrAMA(_indi_params), ::MA_Type);
         break;
       }
-      case STG_MA_TYPE_VIDYA:  // VIDYA
-      {
-        IndiVIDYAParams _indi_params(::MA_Indi_VIDYA_Period, ::MA_Indi_VIDYA_MA_Period, ::MA_Indi_VIDYA_MA_Shift,
-                                     ::MA_Indi_VIDYA_Applied_Price, ::MA_Indi_VIDYA_Shift);
-        _indi_params.SetDataSourceType(::MA_Indi_VIDYA_SourceType);
-        _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
-        SetIndicator(new Indi_VIDYA(_indi_params), ::MA_Type);
-        break;
-      }
       case STG_MA_TYPE_ICHIMOKU:  // Ichimoku
       {
         IndiIchimokuParams _indi_params(::MA_Indi_Ichimoku_Period_Tenkan_Sen, ::MA_Indi_Ichimoku_Period_Kijun_Sen,
                                         ::MA_Indi_Ichimoku_Period_Senkou_Span_B, ::MA_Indi_Ichimoku_Shift);
-        _indi_params.SetDataSourceType(::MA_Indi_MA_SourceType);
+        _indi_params.SetDataSourceType(::MA_Indi_Ichimoku_SourceType);
         _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
         SetIndicator(new Indi_Ichimoku(_indi_params), ::MA_Type);
         break;
@@ -165,6 +162,23 @@ class Stg_MA : public Strategy {
         _indi_params.SetDataSourceType(::MA_Indi_MA_SourceType);
         _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
         SetIndicator(new Indi_MA(_indi_params), ::MA_Type);
+        break;
+      }
+      case STG_MA_TYPE_PRICE_CHANNEL:  // Price Channel
+      {
+        IndiPriceChannelParams _indi_params(::MA_Indi_PriceChannel_Period, ::MA_Indi_PriceChannel_Shift);
+        _indi_params.SetDataSourceType(::MA_Indi_PriceChannel_SourceType);
+        _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
+        SetIndicator(new Indi_PriceChannel(_indi_params), ::MA_Type);
+        break;
+      }
+      case STG_MA_TYPE_VIDYA:  // VIDYA
+      {
+        IndiVIDYAParams _indi_params(::MA_Indi_VIDYA_Period, ::MA_Indi_VIDYA_MA_Period, ::MA_Indi_VIDYA_MA_Shift,
+                                     ::MA_Indi_VIDYA_Applied_Price, ::MA_Indi_VIDYA_Shift);
+        _indi_params.SetDataSourceType(::MA_Indi_VIDYA_SourceType);
+        _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
+        SetIndicator(new Indi_VIDYA(_indi_params), ::MA_Type);
         break;
       }
       case STG_MA_TYPE_0_NONE:  // (None)
