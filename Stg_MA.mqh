@@ -11,6 +11,7 @@ enum ENUM_STG_MA_TYPE {
   STG_MA_TYPE_ICHIMOKU,       // Ichimoku
   STG_MA_TYPE_MA,             // MA: Moving Average
   STG_MA_TYPE_PRICE_CHANNEL,  // Price Channel
+  STG_MA_TYPE_SAR,            // SAR: Parabolic Stop and Reverse
   STG_MA_TYPE_VIDYA,          // VIDYA: Variable Index Dynamic Average
 };
 
@@ -72,6 +73,11 @@ INPUT_GROUP("MA strategy: Price Channel indicator params");
 INPUT int MA_Indi_PriceChannel_Period = 26;                                    // Period
 INPUT int MA_Indi_PriceChannel_Shift = 0;                                      // Shift
 INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_PriceChannel_SourceType = IDATA_ICUSTOM;  // Source type
+INPUT_GROUP("MA strategy: SAR indicator params");
+INPUT float MA_Indi_SAR_Step = 0.04f;                                 // Step
+INPUT float MA_Indi_SAR_Maximum_Stop = 0.4f;                          // Maximum stop
+INPUT int MA_Indi_SAR_Shift = 0;                                      // Shift
+INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_SAR_SourceType = IDATA_ICUSTOM;  // Source type
 INPUT_GROUP("MA strategy: VIDYA indicator params");
 input int MA_Indi_VIDYA_Period = 30;                                    // Period
 input int MA_Indi_VIDYA_MA_Period = 20;                                 // MA Period
@@ -170,6 +176,14 @@ class Stg_MA : public Strategy {
         _indi_params.SetDataSourceType(::MA_Indi_PriceChannel_SourceType);
         _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
         SetIndicator(new Indi_PriceChannel(_indi_params), ::MA_Type);
+        break;
+      }
+      case STG_MA_TYPE_SAR:  // SAR
+      {
+        IndiSARParams _indi_params(::MA_Indi_SAR_Step, ::MA_Indi_SAR_Maximum_Stop, ::MA_Indi_SAR_Shift);
+        _indi_params.SetDataSourceType(::MA_Indi_SAR_SourceType);
+        _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
+        SetIndicator(new Indi_SAR(_indi_params), ::MA_Type);
         break;
       }
       case STG_MA_TYPE_VIDYA:  // VIDYA
