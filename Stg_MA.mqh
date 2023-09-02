@@ -1,6 +1,6 @@
 /**
  * @file
- * Implements MA strategy based the Moving Average indicator.
+ * Implements MA strategy based the moving average price indicators.
  */
 
 // User params.

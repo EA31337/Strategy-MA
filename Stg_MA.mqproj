@@ -4,7 +4,7 @@
   "copyright"   :"Copyright 2016-2023, EA31337 Ltd",
   "link"        :"https:\/\/github.com\/EA31337\/Strategy-MA",
   "version"     :"2.000",
-  "description" :"Strategy based on the Moving Average indicator.",
+  "description" :"Strategy based on the moving average price indicators.",
   "optimize"    :"0",
   "fpzerocheck" :"0",
   "tester_no_cache":"0",

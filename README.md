@@ -7,7 +7,7 @@
 [![License][license-image]][license-link]
 [![Edit][gh-edit-badge]][gh-edit-link]
 
-Strategy based on the Moving Average indicator
+Strategy based on the moving average price indicators.
 
 ## Dependencies
 
@@ -20,6 +20,7 @@ Strategy based on the Moving Average indicator
 | v1.011   | v2.011.1  |
 | v1.012   | v2.012.1  |
 | v1.013   | v2.013    |
+| v2.000   | v3.000.1  |
 
 <!-- Named links -->
 
