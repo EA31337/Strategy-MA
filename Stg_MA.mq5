@@ -15,6 +15,7 @@
 #include <EA31337-classes/Indicators/Indi_MA.mqh>
 #include <EA31337-classes/Indicators/Indi_PriceChannel.mqh>
 #include <EA31337-classes/Indicators/Indi_SAR.mqh>
+#include <EA31337-classes/Indicators/Indi_TEMA.mqh>
 #include <EA31337-classes/Indicators/Indi_VIDYA.mqh>
 #include <EA31337-classes/Strategy.mqh>
 

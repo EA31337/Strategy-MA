@@ -12,6 +12,7 @@ enum ENUM_STG_MA_TYPE {
   STG_MA_TYPE_MA,             // MA: Moving Average
   STG_MA_TYPE_PRICE_CHANNEL,  // Price Channel
   STG_MA_TYPE_SAR,            // SAR: Parabolic Stop and Reverse
+  STG_MA_TYPE_TEMA,           // TEMA: Triple Exponential Moving Average
   STG_MA_TYPE_VIDYA,          // VIDYA: Variable Index Dynamic Average
 };
 
@@ -78,6 +79,12 @@ INPUT float MA_Indi_SAR_Step = 0.04f;                                 // Step
 INPUT float MA_Indi_SAR_Maximum_Stop = 0.4f;                          // Maximum stop
 INPUT int MA_Indi_SAR_Shift = 0;                                      // Shift
 INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_SAR_SourceType = IDATA_ICUSTOM;  // Source type
+INPUT_GROUP("MA strategy: TEMA indicator params");
+INPUT int MA_Indi_TEMA_Period = 10;                                    // Period
+INPUT int MA_Indi_TEMA_MA_Shift = 0;                                   // MA Shift
+INPUT ENUM_APPLIED_PRICE MA_Indi_TEMA_Applied_Price = PRICE_WEIGHTED;  // Applied Price
+INPUT int MA_Indi_TEMA_Shift = 0;                                      // Shift
+INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_TEMA_SourceType = IDATA_BUILTIN;  // Source type
 INPUT_GROUP("MA strategy: VIDYA indicator params");
 input int MA_Indi_VIDYA_Period = 30;                                    // Period
 input int MA_Indi_VIDYA_MA_Period = 20;                                 // MA Period
@@ -184,6 +191,15 @@ class Stg_MA : public Strategy {
         _indi_params.SetDataSourceType(::MA_Indi_SAR_SourceType);
         _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
         SetIndicator(new Indi_SAR(_indi_params), ::MA_Type);
+        break;
+      }
+      case STG_MA_TYPE_TEMA:  // TEMA
+      {
+        IndiTEMAParams _indi_params(::MA_Indi_TEMA_Period, ::MA_Indi_TEMA_MA_Shift, ::MA_Indi_TEMA_Applied_Price,
+                                    ::MA_Indi_TEMA_Shift);
+        _indi_params.SetDataSourceType(::MA_Indi_TEMA_SourceType);
+        _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
+        SetIndicator(new Indi_TEMA(_indi_params), ::MA_Type);
         break;
       }
       case STG_MA_TYPE_VIDYA:  // VIDYA
