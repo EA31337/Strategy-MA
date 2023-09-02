@@ -15,14 +15,14 @@ INPUT_GROUP("MA strategy: main strategy params");
 INPUT ENUM_STG_MA_TYPE MA_Type = STG_MA_TYPE_MA;  // Indicator MA type
 INPUT_GROUP("MA strategy: strategy params");
 INPUT float MA_LotSize = 0;                // Lot size
-INPUT int MA_SignalOpenMethod = 0;         // Signal open method (-127-127)
-INPUT float MA_SignalOpenLevel = 0.04f;    // Signal open level
+INPUT int MA_SignalOpenMethod = 1;         // Signal open method (-127-127)
+INPUT float MA_SignalOpenLevel = 1.0f;     // Signal open level
 INPUT int MA_SignalOpenFilterMethod = 32;  // Signal open filter method
 INPUT int MA_SignalOpenFilterTime = 3;     // Signal open filter time
 INPUT int MA_SignalOpenBoostMethod = 0;    // Signal open boost method
-INPUT int MA_SignalCloseMethod = 0;        // Signal close method (-127-127)
+INPUT int MA_SignalCloseMethod = 1;        // Signal close method (-127-127)
 INPUT int MA_SignalCloseFilter = 0;        // Signal close filter (-127-127)
-INPUT float MA_SignalCloseLevel = 0.04f;   // Signal close level
+INPUT float MA_SignalCloseLevel = 1.0f;    // Signal close level
 INPUT int MA_PriceStopMethod = 1;          // Price stop method (0-127)
 INPUT float MA_PriceStopLevel = 2;         // Price stop level
 INPUT int MA_TickFilterMethod = 32;        // Tick filter method
@@ -45,10 +45,10 @@ INPUT ENUM_APPLIED_PRICE MA_Indi_DEMA_Applied_Price = PRICE_TYPICAL;   // Applie
 INPUT int MA_Indi_DEMA_Shift = 0;                                      // DEMA Shift
 INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_DEMA_SourceType = IDATA_BUILTIN;  // Source type
 INPUT_GROUP("MA strategy: MA indicator params");
-INPUT int MA_Indi_MA_Period = 40;                                    // Period
+INPUT int MA_Indi_MA_Period = 26;                                    // Period
 INPUT int MA_Indi_MA_MA_Shift = 0;                                   // MA Shift
-INPUT ENUM_MA_METHOD MA_Indi_MA_Method = (ENUM_MA_METHOD)3;          // MA Method
-INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = PRICE_OPEN;      // Applied Price
+INPUT ENUM_MA_METHOD MA_Indi_MA_Method = MODE_LWMA;                  // MA Method
+INPUT ENUM_APPLIED_PRICE MA_Indi_MA_Applied_Price = PRICE_WEIGHTED;  // Applied Price
 INPUT int MA_Indi_MA_Shift = 0;                                      // Shift
 INPUT ENUM_IDATA_SOURCE_TYPE MA_Indi_MA_SourceType = IDATA_BUILTIN;  // Source type
 
@@ -137,16 +137,33 @@ class Stg_MA : public Strategy {
       // Returns false when indicator data is not valid.
       return false;
     }
+    float _level_pips = (float)(_level * _chart.GetPipSize());
     switch (_cmd) {
       case ORDER_TYPE_BUY:
-        _result &= _indi[_shift][0] < _chart.GetOpen(_ishift);
+        _result &= _indi[_shift][0] >= _chart.GetOpen(_ishift) + _level_pips;
+        _result &=
+            _indi[_shift + 1][0] < _chart.GetOpen(_ishift + 1) || _indi[_shift + 2][0] < _chart.GetOpen(_ishift + 2);
         _result &= _indi.IsIncreasing(1, 0, _shift);
-        _result &= _indi.IsIncByPct(_level, 0, _shift, 3);
+        if (_result && _method != 0) {
+          if (METHOD(_method, 0)) _result &= _indi.IsIncreasing(1, 0, _shift + 1);
+          if (METHOD(_method, 1)) _result &= _indi.IsIncreasing(4, 0, _shift + 3);
+          if (METHOD(_method, 2))
+            _result &= fmax4(_indi[_shift][0], _indi[_shift + 1][0], _indi[_shift + 2][0], _indi[_shift + 3][0]) ==
+                       _indi[_shift][0];
+        }
         break;
       case ORDER_TYPE_SELL:
-        _result &= _indi[_shift][0] > _chart.GetOpen(_ishift);
+        _result &= _indi[_shift][0] <= _chart.GetOpen(_ishift) - _level_pips;
+        _result &=
+            _indi[_shift + 1][0] > _chart.GetOpen(_ishift + 1) || _indi[_shift + 2][0] > _chart.GetOpen(_ishift + 2);
         _result &= _indi.IsDecreasing(1, 0, _shift);
-        _result &= _indi.IsDecByPct(-_level, 0, _shift, 3);
+        if (_result && _method != 0) {
+          if (METHOD(_method, 0)) _result &= _indi.IsDecreasing(1, 0, _shift + 1);
+          if (METHOD(_method, 1)) _result &= _indi.IsDecreasing(4, 0, _shift + 3);
+          if (METHOD(_method, 2))
+            _result &= fmin4(_indi[_shift][0], _indi[_shift + 1][0], _indi[_shift + 2][0], _indi[_shift + 3][0]) ==
+                       _indi[_shift][0];
+        }
         break;
     }
     return _result;
