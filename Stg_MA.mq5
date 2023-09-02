@@ -8,6 +8,8 @@
 
 // Includes EA31337 framework.
 #include <EA31337-classes/EA.mqh>
+#include <EA31337-classes/Indicators/Indi_AMA.mqh>
+#include <EA31337-classes/Indicators/Indi_DEMA.mqh>
 #include <EA31337-classes/Indicators/Indi_MA.mqh>
 #include <EA31337-classes/Strategy.mqh>
 
@@ -24,7 +26,7 @@ input bool Info_On_Chart = true;          // Display info on chart.
 // Defines.
 #define ea_name "Strategy MA"
 #define ea_version "2.000"
-#define ea_desc "Strategy based on EA31337 framework."
+#define ea_desc "Strategy based on the moving average price indicators."
 #define ea_link "https://github.com/EA31337/Strategy-MA"
 #define ea_author "EA31337 Ltd"
 
